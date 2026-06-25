@@ -1,0 +1,326 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #100f18;
+  color: #f4f4ff;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(94, 99, 255, 0.22), transparent 24%),
+    radial-gradient(circle at top right, rgba(45, 226, 236, 0.18), transparent 18%),
+    radial-gradient(circle at bottom, rgba(255, 150, 153, 0.14), transparent 30%),
+    linear-gradient(180deg, #0f1018, #07070f);
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 15%, rgba(99, 102, 255, 0.24), transparent 16%),
+    radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.18), transparent 14%),
+    radial-gradient(circle at 50% 80%, rgba(248, 113, 113, 0.16), transparent 20%);
+}
+
+#app {
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 72px;
+}
+
+.hero-panel {
+  display: grid;
+  gap: 18px;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  background: rgba(11, 13, 24, 0.88);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(84, 170, 255, 0.18), transparent 45%);
+  pointer-events: none;
+}
+
+.hero-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(129, 140, 248, 0.14);
+  color: #dbe2ff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.hero-panel h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.hero-panel p {
+  margin: 0;
+  max-width: 680px;
+  color: #cad4ff;
+  font-size: 1.05rem;
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+  margin-top: 32px;
+}
+
+.upload-card {
+  padding: 28px;
+  border-radius: 30px;
+  background: rgba(11, 14, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.secondary-card {
+  background: rgba(17, 21, 44, 0.88);
+}
+
+.upload-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.upload-label {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8b94d4;
+}
+
+.upload-card h2 {
+  margin: 6px 0 0;
+  font-size: 1.2rem;
+}
+
+.upload-description,
+.upload-helper,
+.field-note {
+  margin: 14px 0 0;
+  font-size: 0.95rem;
+  color: #c2c9ff;
+  line-height: 1.5;
+}
+
+.file-picker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 18px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  color: #eef2ff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.file-picker:hover {
+  border-color: rgba(100, 147, 255, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.file-picker input {
+  display: none;
+}
+
+.upload-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.upload-chip.required {
+  background: rgba(248, 113, 113, 0.16);
+  color: #ffc9d1;
+}
+
+.upload-chip.optional {
+  background: rgba(96, 165, 250, 0.18);
+  color: #dbeafe;
+}
+
+.query-card {
+  margin-top: 32px;
+  display: grid;
+  gap: 18px;
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(17, 19, 34, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.query-card label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.query-card input {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 16px 18px;
+  background: rgba(12, 14, 26, 0.95);
+  color: #eef2ff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.query-card input:focus {
+  border-color: rgba(121, 152, 255, 0.65);
+  box-shadow: 0 0 0 4px rgba(105, 125, 255, 0.12);
+}
+
+.generate-button {
+  width: fit-content;
+  min-width: 190px;
+  padding: 16px 26px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #645cff, #40d7ff 72%);
+  color: #0d1024;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  align-self: start;
+}
+
+.generate-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generate-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.status-card {
+  margin-top: 24px;
+  padding: 18px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 93, 111, 0.12);
+  color: #ffe5e9;
+}
+
+.answer-card {
+  margin-top: 32px;
+  padding: 28px 30px;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(7, 10, 22, 0.92);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+}
+
+.answer-header {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.answer-header span {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: #9ca3ff;
+}
+
+.answer-header strong {
+  display: block;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.answer-body p {
+  margin: 0 0 1rem;
+  padding: 0;
+  color: #e6ecff;
+}
+
+.answer-body p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    padding: 28px 0 48px;
+  }
+
+  .hero-panel,
+  .query-card,
+  .answer-card {
+    padding: 24px;
+  }
+
+  .generate-button {
+    width: 100%;
+  }
+}
+
+.upload-card {
+    border-radius: 12px;
+    padding: 1rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.upload-card:hover {
+    transform: scale(1.03) rotate(-1deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
