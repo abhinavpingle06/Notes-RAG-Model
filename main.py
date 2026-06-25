@@ -19,15 +19,12 @@ def root():
     return {"Status":200}
 
 @app.get("/query")
-def query(question:str =Form(...)):
+def query(question:str = Query()):
     """
     Return an LLM generated answer, grounded using the PDF content
     """
     try:
-        file_path = Path(PDF_PATH)
-        with open(file_path,"r") as f:
-            file = f.read()
-        rag_engine = RAGEngine(file)
+        rag_engine = RAGEngine(PDF_PATH)
         answer=rag_engine.generate_answer(question)
         return {
             "question":question,

@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR=Path(__file__).resolve().parent.parent.parent
 
 DATA_DIR=BASE_DIR / "data"
-PDF_PATH= DATA_DIR / "knowledge.pdf"
+PDF_PATH= DATA_DIR / "Memory_Allocation_Algorithm.pdf"
 
 # Divides the text by characters - here 500 chars
 CHUNK_SIZE=1000
