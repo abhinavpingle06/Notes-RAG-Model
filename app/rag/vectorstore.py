@@ -1,5 +1,6 @@
 from langchain_redis import RedisVectorStore
 from redisvl.query.filter import Tag
+from app.core.redis import redis_server
 
 class VectorStore:
     """
@@ -25,7 +26,8 @@ class VectorStore:
             metadatas=metadatas,
             texts=texts,
             embedding=self.embeddings.model,
-            redis_url="redis://localhost:6379"
+            redis_url="redis://localhost:6379",
+            ttl=60,
         )
 
     def search(self, query:str, k:int=3):
@@ -38,9 +40,10 @@ class VectorStore:
         docs=self.store.similarity_search(
             query, 
             k=k,
-            filter=Tag("session_id") == self.session_id,
+            # filter=Tag("session_id") == self.session_id,
         )
         
-        print(docs)
+        for d in docs:
+            print(d.metadata)
         return [doc.page_content for doc in docs]
         

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query, UploadFile, Form, File
 import json
 from pydantic import BaseModel
+import traceback
 
 from app.rag.engine import RAGEngine
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,7 +30,7 @@ def query(question:str = Query()):
     Return an LLM generated answer, grounded using the PDF content
     """
     try:
-        rag_engine = RAGEngine(PDF_PATH,101)
+        rag_engine = RAGEngine(PDF_PATH,"101")
         answer=rag_engine.generate_answer(question)
         return {
             "question":question,
@@ -39,7 +40,8 @@ def query(question:str = Query()):
         return {
             "question":question,
             "answer":None,
-            "error": str(e)
+            "error": str(e),
+            "traceback": traceback.format_exc(),
         }
 
 @app.post("/api/answer")
@@ -57,6 +59,7 @@ async def api_answer(question:str =Form(...), notes: UploadFile = File(...), ses
             "question": question,
             "answer": None,
             "error": str(e),
+            "traceback": traceback.format_exc(),
         }
     
 @app.post("/api/chats")
