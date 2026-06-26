@@ -8,3 +8,4 @@ sentence-transformers
 faiss-cpu
 langchain_huggingface
 langchain-groq
+langchain-redis

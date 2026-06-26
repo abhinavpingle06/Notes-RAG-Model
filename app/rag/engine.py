@@ -15,9 +15,10 @@ class RAGEngine:
     Initialized once and serves all queries
     """
 
-    def __init__(self, file):
+    def __init__(self, file, session_id):
         self.vector_store=None
         self.file = file
+        self.session_id = session_id
         self._initialize()
 
     def _initialize(self):
@@ -29,7 +30,7 @@ class RAGEngine:
         # 3.Convert the chunks into embeddings
         embeddings=EmbeddingModel(EMBEDDING_MODEL_NAME)
         # 4.Store it in vector store
-        self.vector_store=VectorStore(embeddings)
+        self.vector_store=VectorStore(embeddings,self.session_id)
         self.vector_store.build(chunks)
         # 5.Initializing Chat Model
         self.llm=ChatGroq(model_name="llama-3.3-70b-versatile")
@@ -45,6 +46,7 @@ class RAGEngine:
         prompt_template=f"""
         You are a helpfile assistant. Use only the information provided in the context below to answer the question.
         If the answer is not present in the context, respond with "I don't know"
+        If the answer is not 
 
         Context: {combined_text}
 
