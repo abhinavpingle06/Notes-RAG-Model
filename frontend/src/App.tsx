@@ -97,12 +97,59 @@ function App() {
     }
   }
 
+  const handleSubmitChat = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!question.trim()) return
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const formData = new FormData()
+      formData.append('question', question)
+      formData.append('session_id', uid)
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = (await response.json()) as AnswerResponse
+      if (!response.ok || data.error) {
+        setError(data.error || 'Failed to load answer.')
+        return
+      }
+
+      console.log(data)
+
+      const newMessage: ChatMessage = {
+        question,
+        answer: data.answer ?? '',
+        createdAt: new Date().toISOString(),
+      }
+
+      setMessages((prev) => [...prev, newMessage])
+      setQuestion('')
+
+      setChat(true)
+
+    } catch (err) {
+      setError('Could not reach the backend. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="page-shell">
       <div className="hero-panel">
-        <div className="hero-badge">RAG Answer Studio - A project made for student by a student</div>
+        <div className="hero-badge">
+          NotesAssist
+        </div>
         <h1>Ask your document question</h1>
-        <p>Generate a structured answer that keeps paragraph formatting and reads clearly.</p>
+        <p>Upload your notes, PDFs, or research papers and ask questions in natural
+          language. Get structured, context-aware answers in seconds.
+        </p>
       </div>
 
       <div className="upload-grid">
@@ -130,7 +177,7 @@ function App() {
             </div>
             <span className="upload-chip optional">Optional</span>
           </div>
-          <p className="upload-description">Add an optional question bank or sample exam PDF to enrich the answer context.</p>
+          <p className="upload-description">Add an optional question bank or sample exam PDF to get the answers with syllabus context.</p>
           <label className="file-picker" htmlFor="questionFile">
             <span>{questionFile ? questionFile.name : 'Select optional question PDF'}</span>
             <input id="questionFile" type="file" accept=".pdf" onChange={handleQuestionFileChange} />
@@ -172,7 +219,7 @@ function App() {
         </article>
       ))}
 
-      { chat && <form className="query-card sticky-form" onSubmit={handleSubmit}>
+      { chat && <form className="query-card sticky-form" onSubmit={handleSubmitChat}>
         <label htmlFor="question">Your question</label>
         <input
           id="question"
@@ -185,7 +232,6 @@ function App() {
         <button type="submit" className="generate-button" disabled={loading || !question.trim() || !notesFile}>
           {loading ? 'Sending…' : 'Send'}
         </button>
-        {!notesFile ? <p className="field-note">Notes upload is required before asking a question.</p> : null}
       </form> }
     </div>
   )

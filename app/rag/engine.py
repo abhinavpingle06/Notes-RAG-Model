@@ -30,7 +30,7 @@ class RAGEngine:
         # 3.Convert the chunks into embeddings
         embeddings=EmbeddingModel(EMBEDDING_MODEL_NAME)
         # 4.Store it in vector store
-        self.vector_store=VectorStore(embeddings,self.session_id)
+        self.vector_store=VectorStore(embeddings=embeddings,session_id=self.session_id)
         self.vector_store.build(chunks)
         # 5.Initializing Chat Model
         self.llm=ChatGroq(model_name="llama-3.3-70b-versatile")
@@ -72,3 +72,5 @@ class RAGEngine:
         }) 
 
         return result['messages'][-1].content
+    
+    

@@ -73,17 +73,43 @@ body::before {
 }
 
 .hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(129, 140, 248, 0.14);
-  color: #dbe2ff;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    font-size: 2rem;
+    border-style: solid;
+    border-color: #f7f7ff65;
+    border-width: 1px 4px 6px 1px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 999px;
+    margin: 0 auto;
+    padding-left: 60px;
+    padding-right: 60px;
 }
+
+.hero-badge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+      transparent 20%,
+      rgba(255, 255, 255, .35) 50%,
+      transparent 80%);
+
+  transform: translateX(-120%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  to {
+    transform: translateX(120%);
+  }
+}
+
 
 .hero-panel h1 {
   margin: 0;

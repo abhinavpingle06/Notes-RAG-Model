@@ -8,7 +8,7 @@ class VectorStore:
     FAIIS-based vector store for document retreival
     """
 
-    def __init__(self, embeddings, session_id):
+    def __init__(self, session_id:str, embeddings):
         self.embeddings=embeddings
         self.session_id = session_id
         self.store=None
