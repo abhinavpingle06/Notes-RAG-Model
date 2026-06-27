@@ -1,5 +1,6 @@
-import { type ChangeEvent, type FormEvent, useState } from 'react'
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { v4 as uuidv4 } from 'uuid'
 
 interface AnswerResponse {
   question: string
@@ -7,14 +8,40 @@ interface AnswerResponse {
   error?: string
 }
 
+interface ChatMessage {
+  question: string
+  answer: string
+  createdAt: string
+}
+
 function App() {
   const [question, setQuestion] = useState('')
   const [notesFile, setNotesFile] = useState<File | null>(null)
   const [questionFile, setQuestionFile] = useState<File | null>(null)
-  const [answer, setAnswer] = useState('')
-  const [submittedQuestion, setSubmittedQuestion] = useState('')
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState(false)
+  const [chat , setChat] = useState<boolean>(false)
   const [error, setError] = useState('')
+  const [uid, setUid] = useState<string | null>(null)
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem('rag-chat-history')
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved))
+      } catch {
+        setMessages([])
+      }
+    }
+
+    const uuid = uuidv4()
+    setUid(uuid)
+    console.log(uuid)
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('rag-chat-history', JSON.stringify(messages))
+  }, [messages])
 
   const handleNotesChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNotesFile(event.target.files?.[0] ?? null)
@@ -30,12 +57,16 @@ function App() {
 
     setLoading(true)
     setError('')
-    setAnswer('')
 
     try {
-        let formData = new FormData()
-        formData.append("question", question);
-        formData.append("notes", notesFile);
+      const formData = new FormData()
+      formData.append('question', question)
+      formData.append('notes', notesFile)
+      if (questionFile) {
+        formData.append('question_file', questionFile)
+      }
+      
+      formData.append('session_id', uid)
 
       const response = await fetch('/api/answer', {
         method: 'POST',
@@ -48,8 +79,17 @@ function App() {
         return
       }
 
-      setSubmittedQuestion(question)
-      setAnswer(data.answer ?? '')
+      const newMessage: ChatMessage = {
+        question,
+        answer: data.answer ?? '',
+        createdAt: new Date().toISOString(),
+      }
+
+      setMessages((prev) => [...prev, newMessage])
+      setQuestion('')
+
+      setChat(true)
+      
     } catch (err) {
       setError('Could not reach the backend. Please try again.')
     } finally {
@@ -67,7 +107,7 @@ function App() {
 
       <div className="upload-grid">
         <section className="upload-card">
-           <div className="upload-row" >
+          <div className="upload-row">
             <div>
               <p className="upload-label">Upload the notes</p>
               <h2>Notes PDF</h2>
@@ -95,7 +135,7 @@ function App() {
             <span>{questionFile ? questionFile.name : 'Select optional question PDF'}</span>
             <input id="questionFile" type="file" accept=".pdf" onChange={handleQuestionFileChange} />
           </label>
-                  <p className="upload-helper">Supported format: PDF only.</p>
+          <p className="upload-helper">Supported format: PDF only.</p>
         </section>
       </div>
 
@@ -115,21 +155,38 @@ function App() {
         {!notesFile ? <p className="field-note">Notes upload is required before generating an answer.</p> : null}
       </form>
 
-      {error ? (
-        <div className="status-card error-card">{error}</div>
-      ) : null}
+      {error ? <div className="status-card error-card">{error}</div> : null}
 
-      {answer ? (
-        <section className="answer-card">
-          <div className="answer-header">
-            <span>Answer for</span>
-            <strong>{submittedQuestion}</strong>
+      {messages.map((message, index) => (
+        <article key={index} className="message-card">
+          <div className="message-bubble question-bubble">
+            <div className="message-tag">You</div>
+            <p className="message-content">{message.question}</p>
           </div>
-            <div className="answer-body">
-                <ReactMarkdown>{answer}</ReactMarkdown>
+          <div className="message-bubble answer-bubble">
+            <div className="message-tag answer-tag">Assistant</div>
+            <div className="message-content">
+              <ReactMarkdown>{message.answer}</ReactMarkdown>
             </div>
-        </section>
-      ) : null}
+          </div>
+        </article>
+      ))}
+
+      { chat && <form className="query-card sticky-form" onSubmit={handleSubmit}>
+        <label htmlFor="question">Your question</label>
+        <input
+          id="question"
+          value={question}
+          onChange={(event) => setQuestion(event.target.value)}
+          placeholder="Ask about the document content..."
+          autoComplete="off"
+        />
+
+        <button type="submit" className="generate-button" disabled={loading || !question.trim() || !notesFile}>
+          {loading ? 'Sending…' : 'Send'}
+        </button>
+        {!notesFile ? <p className="field-note">Notes upload is required before asking a question.</p> : null}
+      </form> }
     </div>
   )
 }

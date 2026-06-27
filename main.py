@@ -45,7 +45,7 @@ def query(question:str = Query()):
         }
 
 @app.post("/api/answer")
-async def api_answer(question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
+def api_answer(question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
     """Return a JSON answer object for the frontend."""
     try:
         rag_engine = RAGEngine(notes.file,session_id)

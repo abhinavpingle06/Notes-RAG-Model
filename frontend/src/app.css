@@ -297,6 +297,70 @@ body::before {
   margin-bottom: 0;
 }
 
+.message-card {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.message-bubble {
+  padding: 16px 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.question-bubble {
+  background: rgba(64, 78, 200, 0.15);
+  border-color: rgba(100, 147, 255, 0.3);
+  margin-left: auto;
+  max-width: 78%;
+}
+
+.answer-bubble {
+  background: rgba(17, 21, 44, 0.92);
+  border-color: rgba(255, 255, 255, 0.06);
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.message-tag {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+}
+
+.question-bubble .message-tag {
+  background: rgba(100, 147, 255, 0.2);
+  color: #bfdbfe;
+}
+
+.answer-bubble .message-tag.answer-tag {
+  background: rgba(248, 113, 113, 0.18);
+  color: #ffc9d1;
+}
+
+.message-content {
+  margin: 0;
+  color: #e6ecff;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.question-bubble .message-content {
+  color: #dbeafe;
+}
+
+.sticky-form {
+  margin-top: 32px;
+  position: relative;
+  z-index: 10;
+}
+
 @media (max-width: 720px) {
   .page-shell {
     padding: 28px 0 48px;

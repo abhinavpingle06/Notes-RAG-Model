@@ -40,7 +40,8 @@ class RAGEngine:
         Geneate an answer using the vectore store with a grounded prompt.
         Retrieve top -k chunls and pass them to llm with a strict prompt
         """
-        contexts=self.vector_store.search(query=question, k=TOP_K)
+        contexts= self.vector_store.search(query=question, k=TOP_K)
+        print(contexts)
         combined_text="\n\n".join(contexts)
 
         prompt_template=f"""
@@ -53,8 +54,8 @@ class RAGEngine:
         question: {question}
 
         Write a comprehensive answer suitable for a 10-mark exam question. 
-        Include definition, working principle, advantages, disadvantages, applications, and a conclusion. 
-        Use around 600-1000 words.
+        Include definition, working principle, advantages, disadvantages, applications, and a conclusion with headings and sub-headings and points/markdown. 
+        Use around 600-1000 words. Dont mention the number of words in answer.
 
         answer:
         """
