@@ -8,6 +8,9 @@ from langchain.agents import create_agent
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RAGEngine:
     """
@@ -15,33 +18,45 @@ class RAGEngine:
     Initialized once and serves all queries
     """
 
-    def __init__(self, file, session_id):
-        self.vector_store=None
+    def __init__(self, file, session_id, embedding_model, redis_config, agent):
         self.file = file
         self.session_id = session_id
+        self.embedding_model = embedding_model
+        # self.vector_store = vectore_store
+        self.redis_config = redis_config
+        self.agent = agent
         self._initialize()
 
     def _initialize(self):
         load_dotenv()
+        logger.info("Initializing RAG Engine for session %s", self.session_id)
         # 1.Get text string 
+        logger.info("Loading PDF and extracting the text...")
         text=PDFLoader(self.file).load_pdf()
+        logger.info("Loading PDF and extraction completed")
         # 2.Divides in chunks
+        logger.info("Splitting in chunks...")
         chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(text)
-        # 3.Convert the chunks into embeddings
-        embeddings=EmbeddingModel(EMBEDDING_MODEL_NAME)
-        # 4.Store it in vector store
-        self.vector_store=VectorStore(embeddings=embeddings,session_id=self.session_id)
+        logger.info("Splitting in chunks completed")
+
+        logger.info("Innitializing Vector Store with embedding model...")
+        self.vector_store=VectorStore(embeddings=self.embedding_model,session_id=self.session_id, redis_config=self.redis_config)
+        logger.info("Innitializing Vector Store with embedding model completed")
+
+        logger.info("Generating Embedddings...")
         self.vector_store.build(chunks)
-        # 5.Initializing Chat Model
-        self.llm=ChatGroq(model_name="llama-3.3-70b-versatile")
+        logger.info("Generating Embedddings Finished")
 
     def generate_answer(self, question:str):
         """
         Geneate an answer using the vectore store with a grounded prompt.
         Retrieve top -k chunls and pass them to llm with a strict prompt
         """
+        logger.info("Inside generating answer")
+        
+        logger.info("Initialize Vector Search...")
         contexts= self.vector_store.search(query=question, k=TOP_K)
-        print(contexts)
+        logger.info("Vector search completed...")
         combined_text="\n\n".join(contexts)
 
         prompt_template=f"""
@@ -60,16 +75,13 @@ class RAGEngine:
         answer:
         """
 
-        agent=create_agent(
-            model=self.llm,
-            system_prompt="You are a helpful assistant"
-        )
-
-        result=agent.invoke({
+        logger.info("Invoking Agent")
+        result=self.agent.invoke({
             "messages":[
                 {"role":"user", "content":prompt_template}
             ]
         }) 
+        logger.info("Got answer from the agent")
 
         return result['messages'][-1].content
     
