@@ -2,11 +2,11 @@ import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { v4 as uuidv4 } from 'uuid'
 
-interface AnswerResponse {
-  question: string
-  answer: string | null
-  error?: string
-}
+// interface AnswerResponse {
+//   question: string
+//   answer: string | null
+//   error?: string
+// }
 
 interface ChatMessage {
   question: string
@@ -23,6 +23,7 @@ function App() {
   const [chat , setChat] = useState<boolean>(false)
   const [error, setError] = useState('')
   const [uid, setUid] = useState<string | null>(null)
+  const [jobId, setJobId] = useState<number|null>(null)
 
   useEffect(() => {
     const saved = window.localStorage.getItem('rag-chat-history')
@@ -61,23 +62,29 @@ function App() {
     try {
       const formData = new FormData()
       formData.append('question', question)
-      formData.append('notes', notesFile)
+      formData.append('pdfs', notesFile)
       if (questionFile) {
-        formData.append('question_file', questionFile)
+        formData.append('pdfs', questionFile)
       }
       
       formData.append('session_id', uid)
 
-      const response = await fetch('/api/answer', {
+      const response = await fetch('http://127.0.0.1:3000/upload', {
         method: 'POST',
         body: formData,
       })
 
-      const data = (await response.json()) as AnswerResponse
+      const data = await response.json()
       if (!response.ok || data.error) {
         setError(data.error || 'Failed to load answer.')
         return
       }
+      // setJobId(data.jobId)
+
+      // Now we will start polling 
+      setInterval(async () => {
+        
+      },2000)
 
       const newMessage: ChatMessage = {
         question,
@@ -114,7 +121,7 @@ function App() {
         body: formData,
       })
 
-      const data = (await response.json()) as AnswerResponse
+      const data = await response.json()
       if (!response.ok || data.error) {
         setError(data.error || 'Failed to load answer.')
         return

@@ -1,4 +1,6 @@
+from typing import List
 from fastapi import FastAPI, Query, Request, UploadFile, Form, File
+from pydantic import BaseModel
 import json
 import traceback
 from langchain_redis import RedisVectorStore,RedisConfig
@@ -9,13 +11,25 @@ from langchain_groq import ChatGroq
 import logging
 import time
 from contextlib import asynccontextmanager
+import requests
+import boto3
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from app.rag.engine import RAGEngine
-from app.core.config import PDF_PATH
+from app.core.config import DATA_DIR, PDF_PATH
 from app.core.redis import redis_server
 from app.rag.embeddings import EmbeddingModel
 from app.core.config import EMBEDDING_MODEL_NAME, LLM_MODEL_NAME, REDIS_URL
 
+class PDFrequest(BaseModel):
+    job_id: str
+    session_id: str
+    filename: str
+    s3key: str
+    question: str
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -45,11 +59,6 @@ async def lifespan(app: FastAPI):
             ]
         )
 
-    # app.state.vector_store = RedisVectorStore(
-    #     embeddings=app.state.embedding_model,
-    #     config=config,
-    # )
-
     print("Startup complete")
 
     yield
@@ -58,6 +67,18 @@ async def lifespan(app: FastAPI):
 
 # INITIALIZE 
 app = FastAPI(lifespan=lifespan)
+
+
+print(os.getenv("S3_REGION"))
+print(os.getenv("S3_ACCESS_KEY"))
+print(os.getenv("S3_SECRET_ACCESS_KEY"))
+
+s3 = boto3.client(
+    "s3",
+    region_name= os.getenv("S3_REGION"),
+    aws_access_key_id= os.getenv("S3_ACCESS_KEY"),
+    aws_secret_access_key= os.getenv("S3_SECRET_ACCESS_KEY"),
+    )
 
 logging.basicConfig(
     level=logging.INFO,
@@ -97,25 +118,44 @@ async def log_requests(request: Request, call_next):
 def root():
     return {"Status":200}
 
-@app.get("/query")
-def query(request: Request, question:str = Query()):
+@app.post("/query")
+def query(request: Request, question:str= Form(...), pdfs: List[UploadFile] = File(...)):
     """
     Return an LLM generated answer, grounded using the PDF content
     """
     try:
-        rag_engine = RAGEngine(
-            file=PDF_PATH,
-            session_id="101",
-            embedding_model= request.app.state.embedding_model,
-            # vectore_store= request.app.state.vector_store,
-            redis_config= request.app.state.redis_config,
-            agent = request.app.state.agent,
+        files = []
+
+        for pdf in pdfs:
+            files.append(
+            (
+                "pdfs",  # Must match upload.array("pdfs")
+                (pdf.filename, pdf.file, pdf.content_type)
+            )
         )
+        data = {
+        "session_id": "202",
+        "question": question
+        }
+
+        response = requests.post("http://localhost:3000/upload",
+        files=files,
+        data=data
+    )
         
-        answer=rag_engine.generate_answer(question)
+        # rag_engine = RAGEngine(
+        #     file=PDF_PATH,
+        #     session_id="101",
+        #     embedding_model= request.app.state.embedding_model,
+        #     # vectore_store= request.app.state.vector_store,
+        #     redis_config= request.app.state.redis_config,
+        #     agent = request.app.state.agent,
+        # )
+        
+        # answer=rag_engine.generate_answer(question)
         return {
             "question":question,
-            "answer":answer
+            # "answer":answer
         }
     except Exception as e:
         return {
@@ -126,33 +166,53 @@ def query(request: Request, question:str = Query()):
         }
 
 @app.post("/api/answer")
-async def api_answer(request: Request, question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
+async def api_answer(request: Request,
+        # question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
+        data: PDFrequest):
     """Return a JSON answer object for the frontend."""
     try:
+        logger.info(f"Downloading file ${data.filename} from S3")
+        local_path = os.path.join(DATA_DIR, data.filename)
+        s3.download_file(
+            os.getenv("S3_BUCKET_NAME"),
+            data.s3key,
+            local_path
+        )
+        logger.info(f"Successfully Downloaded file ${data.filename} from S3") 
         rag_engine = RAGEngine(
-            file= notes.file,
-            session_id= session_id,
+            file= local_path,
+            session_id= data.session_id,
             embedding_model= request.app.state.embedding_model,
             # vectore_store= request.app.state.vector_store,
             redis_config= request.app.state.redis_config,
             agent = request.app.state.agent,
         )
-        answer = rag_engine.generate_answer(question)
+        answer = rag_engine.generate_answer(data.question)
+
+        # Setting answer in redis with session as key 
+        await redis_server.set(
+            f"job:${data.job_id}",
+            json.dumps({
+                "status": "completed",
+                "answer":answer
+            })
+        )
+        # Setting the context 
         context_obj = {
-            "user_question":question,
+            "user_question":data.question,
             "assistant_answer":answer
         }
-        await redis_server.rpush(f"session:{session_id}:chats",json.dumps(context_obj))
-        await redis_server.expire(f"session:{session_id}:chats", 3600) 
+        await redis_server.rpush(f"session:{data.session_id}:chats",json.dumps(context_obj))
+        await redis_server.expire(f"session:{data.session_id}:chats", 3600) 
 
         return {
-            "question": question,
+            "status": data.question,
             "answer": answer,
         }
     except Exception as e:
         logger.exception("Error while processing request")
         return {
-            "question": question,
+            "question": data.question,
             "answer": None,
             "error": str(e),
             "traceback": traceback.format_exc(),
