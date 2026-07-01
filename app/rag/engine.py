@@ -18,11 +18,11 @@ class RAGEngine:
     Initialized once and serves all queries
     """
 
-    def __init__(self, file, session_id, embedding_model, redis_config, agent):
-        self.file = file
+    def __init__(self, file, session_id, embedding_model, redis_config, vector_store, agent):
+        self.files = file
         self.session_id = session_id
         self.embedding_model = embedding_model
-        # self.vector_store = vectore_store
+        self.store = vector_store
         self.redis_config = redis_config
         self.agent = agent
         self._initialize()
@@ -32,19 +32,23 @@ class RAGEngine:
         logger.info("Initializing RAG Engine for session %s", self.session_id)
         # 1.Get text string 
         logger.info("Loading PDF and extracting the text...")
-        text=PDFLoader(self.file).load_pdf()
+        texts = []
+        for file in self.files:
+            text=PDFLoader(file).load_pdf()
+            texts.append(text)
+        whole_text = "\n".join(texts)
         logger.info("Loading PDF and extraction completed")
         # 2.Divides in chunks
         logger.info("Splitting in chunks...")
-        chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(text)
+        chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(whole_text)
         logger.info("Splitting in chunks completed")
 
         logger.info("Innitializing Vector Store with embedding model...")
-        self.vector_store=VectorStore(embeddings=self.embedding_model,session_id=self.session_id, redis_config=self.redis_config)
+        # self.vector_store=VectorStore(embeddings=self.embedding_model,session_id=self.session_id, redis_config=self.redis_config)
         logger.info("Innitializing Vector Store with embedding model completed")
 
         logger.info("Generating Embedddings...")
-        self.vector_store.build(chunks)
+        self.store.add(self.session_id, chunks)
         logger.info("Generating Embedddings Finished")
 
     def generate_answer(self, question:str):
@@ -55,7 +59,7 @@ class RAGEngine:
         logger.info("Inside generating answer")
         
         logger.info("Initialize Vector Search...")
-        contexts= self.vector_store.search(query=question, k=TOP_K)
+        contexts= self.store.search(session_id=self.session_id ,query=question)
         logger.info("Vector search completed...")
         combined_text="\n\n".join(contexts)
 

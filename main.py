@@ -16,6 +16,8 @@ import boto3
 import os
 from dotenv import load_dotenv
 
+from app.rag.vectorstore import VectorStore
+
 load_dotenv()
 
 from app.rag.engine import RAGEngine
@@ -24,19 +26,23 @@ from app.core.redis import redis_server
 from app.rag.embeddings import EmbeddingModel
 from app.core.config import EMBEDDING_MODEL_NAME, LLM_MODEL_NAME, REDIS_URL
 
+class FILES(BaseModel):
+    filename:str
+    s3key:str
+
 class PDFrequest(BaseModel):
-    job_id: str
-    session_id: str
-    filename: str
-    s3key: str
+    job_id:str
     question: str
+    session_id: str
+    files_data: list[FILES]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
     print("Loading models...")
 
-    app.state.embedding_model = EmbeddingModel(EMBEDDING_MODEL_NAME)
+    embedding_model = EmbeddingModel(EMBEDDING_MODEL_NAME)
+    app.state.embedding_model = embedding_model
 
     llm = ChatGroq(
         model_name=LLM_MODEL_NAME
@@ -45,9 +51,9 @@ async def lifespan(app: FastAPI):
     app.state.agent = create_agent(
     model= llm,
     system_prompt="You are a helpful assistant",
-)
+    )
 
-    app.state.redis_config = RedisConfig(
+    redis_config = RedisConfig(
             index_name="index-pdf",
             redis_url="redis://localhost:6379",
             indexing_algorithm="HNSW",
@@ -58,6 +64,12 @@ async def lifespan(app: FastAPI):
                 }
             ]
         )
+    app.state.redis_config = redis_config
+    
+    store = VectorStore(embeddings=embedding_model, redis_config=redis_config)
+    app.state.store = store
+    print(store.store._index.exists())
+    # app.state.store.add
 
     print("Startup complete")
 
@@ -171,32 +183,37 @@ async def api_answer(request: Request,
         data: PDFrequest):
     """Return a JSON answer object for the frontend."""
     try:
-        logger.info(f"Downloading file ${data.filename} from S3")
-        local_path = os.path.join(DATA_DIR, data.filename)
-        s3.download_file(
-            os.getenv("S3_BUCKET_NAME"),
-            data.s3key,
-            local_path
-        )
-        logger.info(f"Successfully Downloaded file ${data.filename} from S3") 
+        files_path = []
+        for pdf in data.files_data:
+            logger.info(f"Downloading file ${pdf.filename} from S3")
+            local_path = os.path.join(DATA_DIR, pdf.filename)
+            s3.download_file(
+                os.getenv("S3_BUCKET_NAME"),
+                pdf.s3key,
+                local_path
+            )
+            files_path.append(local_path)
+        logger.info(f"Successfully Downloaded file ${pdf.filename} from S3") 
         rag_engine = RAGEngine(
-            file= local_path,
-            session_id= data.session_id,
-            embedding_model= request.app.state.embedding_model,
-            # vectore_store= request.app.state.vector_store,
-            redis_config= request.app.state.redis_config,
-            agent = request.app.state.agent,
-        )
+                file= files_path,
+                session_id= data.session_id,
+                embedding_model= request.app.state.embedding_model,
+                vector_store= request.app.state.store,
+                redis_config= request.app.state.redis_config,
+                agent = request.app.state.agent,
+            )
+        # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
         answer = rag_engine.generate_answer(data.question)
 
-        # Setting answer in redis with session as key 
-        await redis_server.set(
-            f"job:${data.job_id}",
-            json.dumps({
-                "status": "completed",
-                "answer":answer
-            })
-        )
+        # # Setting answer in redis with session as key 
+        # await redis_server.set(
+        #     f"answer:${data.session_id}",
+        #     json.dumps({
+        #         "status": "completed",
+        #         "answer":answer
+        #     }),
+        #     ex=3600,
+        # )
         # Setting the context 
         context_obj = {
             "user_question":data.question,
@@ -206,14 +223,13 @@ async def api_answer(request: Request,
         await redis_server.expire(f"session:{data.session_id}:chats", 3600) 
 
         return {
-            "status": data.question,
-            "answer": answer,
-        }
+                "msg": "Success",
+                "answer": answer,
+            }
     except Exception as e:
         logger.exception("Error while processing request")
         return {
-            "question": data.question,
-            "answer": None,
+            "msg":"Failed",
             "error": str(e),
             "traceback": traceback.format_exc(),
         }

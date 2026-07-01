@@ -1,5 +1,13 @@
 const {Worker} = require("bullmq")
 const axios = require('axios')
+const Redis = require("ioredis");
+const path = require('path')
+require('dotenv').config({path:path.resolve(__dirname,"../.env")})
+
+const redis = new Redis({
+    host: "localhost",
+    port: 6379,
+});
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
@@ -7,15 +15,36 @@ const worker = new Worker("pdf-processing", async (job) => {
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,
-        filename: job.data.filename,
-        s3key: job.data.s3key
-    })
-    return 
+        files_data: job.data.files_data,
+    })  
 
+    if (response.data.msg === "Success") {
+
+        await redis.set(
+            `answer:${job.data.session_id}`,
+            JSON.stringify({
+                status: "completed",
+                answer: response.data.answer
+            }),
+            "EX",
+            3600
+        );
+
+    } else {
+        await redis.set(
+            `answer:${job.data.session_id}`,
+            JSON.stringify({
+                status: "failed",
+                error: response.data.error
+            }),
+            "EX",
+            3600
+        );
+    }
 },{
     connection: {
         host: "localhost",
-        port: 6380
+        port: 6379
     },
     concurrency: 3
 })

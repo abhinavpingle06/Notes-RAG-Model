@@ -16,14 +16,13 @@ interface ChatMessage {
 
 function App() {
   const [question, setQuestion] = useState('')
-  const [notesFile, setNotesFile] = useState<File | null>(null)
-  const [questionFile, setQuestionFile] = useState<File | null>(null)
+  const [notesFiles, setNotesFiles] = useState<File[]>([])
+  const [questionFiles, setQuestionFiles] = useState<File[]>([])
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState(false)
   const [chat , setChat] = useState<boolean>(false)
   const [error, setError] = useState('')
   const [uid, setUid] = useState<string | null>(null)
-  const [jobId, setJobId] = useState<number|null>(null)
 
   useEffect(() => {
     const saved = window.localStorage.getItem('rag-chat-history')
@@ -45,16 +44,16 @@ function App() {
   }, [messages])
 
   const handleNotesChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNotesFile(event.target.files?.[0] ?? null)
+    setNotesFiles(event.target.files ? Array.from(event.target.files) : [])
   }
 
   const handleQuestionFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuestionFile(event.target.files?.[0] ?? null)
+    setQuestionFiles(event.target.files ? Array.from(event.target.files) : [])
   }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    if (!question.trim() || !notesFile) return
+    if (!question.trim() || notesFiles.length === 0) return
 
     setLoading(true)
     setError('')
@@ -62,11 +61,8 @@ function App() {
     try {
       const formData = new FormData()
       formData.append('question', question)
-      formData.append('pdfs', notesFile)
-      if (questionFile) {
-        formData.append('pdfs', questionFile)
-      }
-      
+      notesFiles.forEach((file) => formData.append('pdfs', file))
+      questionFiles.forEach((file) => formData.append('pdfs', file))
       formData.append('session_id', uid)
 
       const response = await fetch('http://127.0.0.1:3000/upload', {
@@ -82,25 +78,49 @@ function App() {
       // setJobId(data.jobId)
 
       // Now we will start polling 
-      setInterval(async () => {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/result/${uid}`)
+          const data = await response.json();
+
+          if (data.status === "completed") {
+            const newMessage: ChatMessage = {
+              question,
+              answer: data.answer ?? '',
+              createdAt: new Date().toISOString(),
+            }
+            setMessages((prev) => [...prev, newMessage])
+            setQuestion('')
+            clearInterval(interval)
+            setLoading(false)
+            setChat(true)
+          }
+
+          if (data.status === "failed") {
+            const newMessage: ChatMessage = {
+              question,
+              answer: data.error ?? '',
+              createdAt: new Date().toISOString(),
+            }
+            setMessages((prev) => [...prev, newMessage])
+            setQuestion('')
+            clearInterval(interval)
+            setLoading(false)
+            setChat(true)
+          }
+
+          console.log("processing...")
+        } catch (error) {
+          clearInterval(interval);
+          setLoading(false);
+          setError("Polling failed");
+          setChat(true)
+        }
         
       },2000)
 
-      const newMessage: ChatMessage = {
-        question,
-        answer: data.answer ?? '',
-        createdAt: new Date().toISOString(),
-      }
-
-      setMessages((prev) => [...prev, newMessage])
-      setQuestion('')
-
-      setChat(true)
-      
     } catch (err) {
       setError('Could not reach the backend. Please try again.')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -164,15 +184,22 @@ function App() {
           <div className="upload-row">
             <div>
               <p className="upload-label">Upload the notes</p>
-              <h2>Notes PDF</h2>
+              <h2>Notes PDFs</h2>
             </div>
             <span className="upload-chip required">Required</span>
           </div>
-          <p className="upload-description">This file is necessary for grounding answers in your document content.</p>
+          <p className="upload-description">Upload one or more notes PDFs to ground answer generation in your document content.</p>
           <label className="file-picker" htmlFor="notesFile">
-            <span>{notesFile ? notesFile.name : 'Select notes PDF'}</span>
-            <input id="notesFile" type="file" accept=".pdf" onChange={handleNotesChange} />
+            <span>{notesFiles.length > 0 ? `${notesFiles.length} selected file${notesFiles.length > 1 ? 's' : ''}` : 'Select notes PDF(s)'}</span>
+            <input id="notesFile" type="file" accept=".pdf" multiple onChange={handleNotesChange} />
           </label>
+          {notesFiles.length > 0 ? (
+            <div className="file-list">
+              {notesFiles.map((file, index) => (
+                <span key={index} className="file-chip">{file.name}</span>
+              ))}
+            </div>
+          ) : null}
           <p className="upload-helper">Supported format: PDF only.</p>
         </section>
 
@@ -180,15 +207,22 @@ function App() {
           <div className="upload-row">
             <div>
               <p className="upload-label">Upload the question bank</p>
-              <h2>Question PDF</h2>
+              <h2>Question Bank PDFs</h2>
             </div>
             <span className="upload-chip optional">Optional</span>
           </div>
-          <p className="upload-description">Add an optional question bank or sample exam PDF to get the answers with syllabus context.</p>
+          <p className="upload-description">Add one or more optional question bank PDFs to help the assistant answer with syllabus and sample question context.</p>
           <label className="file-picker" htmlFor="questionFile">
-            <span>{questionFile ? questionFile.name : 'Select optional question PDF'}</span>
-            <input id="questionFile" type="file" accept=".pdf" onChange={handleQuestionFileChange} />
+            <span>{questionFiles.length > 0 ? `${questionFiles.length} selected file${questionFiles.length > 1 ? 's' : ''}` : 'Select optional question PDF(s)'}</span>
+            <input id="questionFile" type="file" accept=".pdf" multiple onChange={handleQuestionFileChange} />
           </label>
+          {questionFiles.length > 0 ? (
+            <div className="file-list">
+              {questionFiles.map((file, index) => (
+                <span key={index} className="file-chip">{file.name}</span>
+              ))}
+            </div>
+          ) : null}
           <p className="upload-helper">Supported format: PDF only.</p>
         </section>
       </div>
@@ -203,10 +237,10 @@ function App() {
           autoComplete="off"
         />
 
-        <button type="submit" className="generate-button" disabled={loading || !question.trim() || !notesFile}>
+        <button type="submit" className="generate-button" disabled={loading || !question.trim() || notesFiles.length === 0}>
           {loading ? 'Generating…' : 'Generate Answer'}
         </button>
-        {!notesFile ? <p className="field-note">Notes upload is required before generating an answer.</p> : null}
+        {notesFiles.length === 0 ? <p className="field-note">Upload at least one notes PDF before generating an answer.</p> : null}
       </form>
 
       {error ? <div className="status-card error-card">{error}</div> : null}
@@ -236,7 +270,7 @@ function App() {
           autoComplete="off"
         />
 
-        <button type="submit" className="generate-button" disabled={loading || !question.trim() || !notesFile}>
+        <button type="submit" className="generate-button" disabled={loading || !question.trim() || notesFiles.length === 0}>
           {loading ? 'Sending…' : 'Send'}
         </button>
       </form> }

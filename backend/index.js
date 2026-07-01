@@ -4,9 +4,14 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const { Queue, tryCatch }= require('bullmq')
 const cors = require("cors")
 const path = require('path')
+const Redis = require('ioredis')
 require('dotenv').config({path:path.resolve(__dirname,"../.env")})
 
 // Initalize
+const redis = new Redis({
+    host: "localhost",
+    port: 6379,
+});
 const PORT = 3000;
 
 const upload = multer({
@@ -16,13 +21,12 @@ const upload = multer({
 const jobQueue = new Queue("pdf-processing",{
     connection: {
         host: "localhost",
-        port: 6380
+        port: 6379
     },
     defaultJobOptions:{
         removeOnComplete:true,
         removeOnFail:{count:3}
     }
-
 })
 
 const s3 = new S3Client({
@@ -50,6 +54,7 @@ app.post("/upload",
             const files = req.files;
             // console.log(question, session_id, files)
 
+            const worker_job = []
             for (const file of files) {
                 const key = `upload/${session_id}/${file.originalname}`
 
@@ -58,15 +63,19 @@ app.post("/upload",
                     Key: key,
                     Body: file.buffer,
                     ContentType: file.mimetype,
-                }))
-
-                const job = await jobQueue.add("pdf-processing", {
-                    session_id: session_id,
-                    question: question,
-                    filename: file.originalname,
-                    s3key: key
+                })) 
+                
+                worker_job.push({
+                    "filename":file.originalname,
+                    "s3key": key
                 })
             }
+
+            const job = await jobQueue.add("pdf-processing", {
+                session_id: session_id,
+                question: question,
+                files_data: worker_job,
+            })
 
             return res.json({
                 message:"success",
@@ -79,6 +88,22 @@ app.post("/upload",
             })
         }
         
+});
+
+// FOR POLLING 
+app.get("/result/:session_id", async (req, res) => {
+
+    const { session_id } = req.params;
+
+    const result = await redis.get(`answer:${session_id}`);
+
+    if (!result) {
+        return res.json({
+            status: "processing"
+        });
+    }
+
+    return res.json(JSON.parse(result));
 });
 
 // Start server
