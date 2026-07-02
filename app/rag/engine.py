@@ -19,7 +19,7 @@ class RAGEngine:
     """
 
     def __init__(self, file, session_id, embedding_model, redis_config, vector_store, agent):
-        self.files = file
+        self.file = file
         self.session_id = session_id
         self.embedding_model = embedding_model
         self.store = vector_store
@@ -32,15 +32,11 @@ class RAGEngine:
         logger.info("Initializing RAG Engine for session %s", self.session_id)
         # 1.Get text string 
         logger.info("Loading PDF and extracting the text...")
-        texts = []
-        for file in self.files:
-            text=PDFLoader(file).load_pdf()
-            texts.append(text)
-        whole_text = "\n".join(texts)
+        text=PDFLoader(self.file).load_pdf()
         logger.info("Loading PDF and extraction completed")
         # 2.Divides in chunks
         logger.info("Splitting in chunks...")
-        chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(whole_text)
+        chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(text=text)
         logger.info("Splitting in chunks completed")
 
         logger.info("Innitializing Vector Store with embedding model...")
@@ -51,7 +47,11 @@ class RAGEngine:
         self.store.add(self.session_id, chunks)
         logger.info("Generating Embedddings Finished")
 
-    def generate_answer(self, question:str):
+        return {
+            "msg":"success"
+        }
+
+    def generate_answer(self, session_id:str, store, question:str):
         """
         Geneate an answer using the vectore store with a grounded prompt.
         Retrieve top -k chunls and pass them to llm with a strict prompt

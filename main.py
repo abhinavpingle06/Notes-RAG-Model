@@ -34,7 +34,11 @@ class PDFrequest(BaseModel):
     job_id:str
     question: str
     session_id: str
-    files_data: list[FILES]
+    files_data: FILES
+
+class chatData(BaseModel):
+    session_id:str
+    question:str
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -177,31 +181,32 @@ def query(request: Request, question:str= Form(...), pdfs: List[UploadFile] = Fi
             "traceback": traceback.format_exc(),
         }
 
-@app.post("/api/answer")
+@app.post("/api/upload")
 async def api_answer(request: Request,
         # question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
         data: PDFrequest):
     """Return a JSON answer object for the frontend."""
     try:
-        files_path = []
-        for pdf in data.files_data:
-            logger.info(f"Downloading file ${pdf.filename} from S3")
-            local_path = os.path.join(DATA_DIR, pdf.filename)
-            s3.download_file(
-                os.getenv("S3_BUCKET_NAME"),
-                pdf.s3key,
-                local_path
-            )
-            files_path.append(local_path)
-        logger.info(f"Successfully Downloaded file ${pdf.filename} from S3") 
+        file = data.files_data
+        logger.info(f"Downloading file ${file.filename} from S3")
+        local_path = os.path.join(DATA_DIR, file.filename)
+        s3.download_file(
+            os.getenv("S3_BUCKET_NAME"),
+            file.s3key,
+            local_path
+        )
+
+        logger.info(f"Successfully Downloaded file ${file.filename} from S3") 
         rag_engine = RAGEngine(
-                file= files_path,
+                file= local_path,
                 session_id= data.session_id,
                 embedding_model= request.app.state.embedding_model,
                 vector_store= request.app.state.store,
                 redis_config= request.app.state.redis_config,
                 agent = request.app.state.agent,
             )
+        
+        return {"msg":"success"}
         # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
         answer = rag_engine.generate_answer(data.question)
 
@@ -235,36 +240,44 @@ async def api_answer(request: Request,
         }
     
 @app.post("/api/chat")
-async def api_chats(request: Request, question:str = Form(...), session_id:str = Form(...)):
+async def api_chats(request: Request, data:chatData ):
     try:
-        logger.info("Configuration of redis for chat")
-        # config = RedisConfig(
-        #         index_name="index-pdf",
-        #         redis_url="redis://localhost:6379",
-        #     )
+        # logger.info("Configuration of redis for chat")
+        # # config = RedisConfig(
+        # #         index_name="index-pdf",
+        # #         redis_url="redis://localhost:6379",
+        # #     )
 
-        # embedding_model = EmbeddingModel(EMBEDDING_MODEL_NAME)
-        logger.info("Initializing vector store for chat")
-        store = RedisVectorStore(
-            embeddings=request.app.state.embedding_model ,
-            config= request.app.state.redis_config
-        )
+        # # embedding_model = EmbeddingModel(EMBEDDING_MODEL_NAME)
+        # logger.info("Initializing vector store for chat")
+        # store = RedisVectorStore(
+        #     embeddings=request.app.state.embedding_model ,
+        #     config= request.app.state.redis_config
+        # )
         logger.info("Initializing vector similarity search for chat")
-        similarity_arr = store.similarity_search(
-            query=question, 
-            k=3,
-            filter= Tag("session_id") == session_id,
+        similarity_arr = request.app.state.store.search(
+            session_id=data.session_id,
+            query=data.question, 
         )
+        combined_text="\n\n".join(similarity_arr)
 
-        combined_text="\n\n".join(doc.page_content for doc in similarity_arr)
         """ GET THE CONTEXT THROUGH SESSION ID"""
         logger.info("Loading convo from redis...")
-        context = await redis_server.lrange(f"session:{session_id}:chats",0,-1)
+        context = await redis_server.lrange(f"session:{data.session_id}:chats",0,-1)
         logger.info("Loading convo from redis completed...")
-        contextObj = [json.loads(obj) for obj in context]
-
+        if context:
+            contextObj = [json.loads(obj) for obj in context]
+        else:
+            contextObj = []
+        
         prompt_template=f"""
-            You are a helpful AI assistant that answers questions using the provided document context and the previous conversation.
+            You are a helpfile assistant. Use only the information provided in the context below to answer the question.
+        If the answer is not present in the context, respond with "I don't know"
+        If the answer is not
+
+        Write a comprehensive answer suitable for a 10-mark exam question. 
+        Include definition, working principle, advantages, disadvantages, applications, and a conclusion with headings and sub-headings and points/markdown. 
+        Use around 600-1000 words. Dont mention the number of words in answer.
 
     Instructions:
 
@@ -286,7 +299,7 @@ async def api_chats(request: Request, question:str = Form(...), session_id:str =
 
     ### User Question
 
-    {question}
+    {data.question}
 
     ### Response
     answer:
@@ -300,20 +313,20 @@ async def api_chats(request: Request, question:str = Form(...), session_id:str =
         answer = result['messages'][-1].content
         
         context_obj = {
-            "user_question":question,
+            "user_question":data.question,
             "assistant_answer":answer
         }
-        await redis_server.rpush(f"session:{session_id}:chats",json.dumps(context_obj))
-        await redis_server.expire(f"session:{session_id}:chats", 3600) 
+        await redis_server.rpush(f"session:{data.session_id}:chats",json.dumps(context_obj))
+        await redis_server.expire(f"session:{data.session_id}:chats", 3600) 
 
         return {
-                "question": question,
+                "question": data.question,
                 "answer": answer,
             }
     except Exception as e:
         logger.exception("Error while processing request")
         return {
-            "question": question,
+            "question": data.question,
             "answer": None,
             "error": str(e),
             "traceback": traceback.format_exc(),

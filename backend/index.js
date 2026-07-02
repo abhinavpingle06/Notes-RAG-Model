@@ -40,13 +40,15 @@ const s3 = new S3Client({
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/express", (req, res) => {
     res.send("The server is running......");
 });
 
-app.post("/upload",
+app.post("/express/upload",
     upload.array("pdfs"), // Middleware
     async (req, res) => {  // Route handeling
         try {
@@ -54,28 +56,37 @@ app.post("/upload",
             const files = req.files;
             // console.log(question, session_id, files)
 
-            const worker_job = []
-            for (const file of files) {
-                const key = `upload/${session_id}/${file.originalname}`
-
-                await s3.send(new PutObjectCommand({
-                    Bucket: process.env.S3_BUCKET_NAME,
-                    Key: key,
-                    Body: file.buffer,
-                    ContentType: file.mimetype,
-                })) 
-                
-                worker_job.push({
-                    "filename":file.originalname,
-                    "s3key": key
+            // For polling tracking...
+            await redis
+                .multi()
+                .hset(`user:${session_id}`, {
+                    uploaded_pdf: files.length,
+                    processed_pdf: 0,
                 })
-            }
+                .expire(`user:${session_id}`, 7200)
+                .exec();
 
-            const job = await jobQueue.add("pdf-processing", {
-                session_id: session_id,
-                question: question,
-                files_data: worker_job,
-            })
+            // Promise All
+            await Promise.all(
+                files.map( async (file) => {
+                    // Key for storing path in s3
+                    const key = `upload/${session_id}/${file.originalname}`
+                    await s3.send(new PutObjectCommand({
+                        Bucket: process.env.S3_BUCKET_NAME,
+                        Key: key,
+                        Body: file.buffer,
+                        ContentType: file.mimetype,
+                    })) 
+                    await jobQueue.add("pdf-processing", {
+                        session_id: session_id, //To track redis session
+                        question: question,
+                        files_data: {
+                            "filename": file.originalname, // To track redis session files
+                            "s3key": key // To download the file
+                        },
+                    }) 
+                })
+            )
 
             return res.json({
                 message:"success",
@@ -84,26 +95,28 @@ app.post("/upload",
         } catch (error) {
             return res.status(404).json({
                 status:"Error",
-                error:error,
+                error: String(error),
             })
         }
         
 });
 
 // FOR POLLING 
-app.get("/result/:session_id", async (req, res) => {
+app.get("/express/result/:session_id", async (req, res) => {
 
     const { session_id } = req.params;
 
-    const result = await redis.get(`answer:${session_id}`);
+    const result = await redis.hgetall(`user:${session_id}`);
 
-    if (!result) {
+    if (Number(result.uploaded_pdf) === Number(result.processed_pdf)) {
         return res.json({
-            status: "processing"
+            status: "success"
         });
     }
 
-    return res.json(JSON.parse(result));
+    return res.json({
+        status: "pending"
+    });
 });
 
 // Start server

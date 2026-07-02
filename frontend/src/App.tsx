@@ -65,7 +65,7 @@ function App() {
       questionFiles.forEach((file) => formData.append('pdfs', file))
       formData.append('session_id', uid)
 
-      const response = await fetch('http://127.0.0.1:3000/upload', {
+      const response = await fetch('/express/upload', {
         method: 'POST',
         body: formData,
       })
@@ -75,15 +75,28 @@ function App() {
         setError(data.error || 'Failed to load answer.')
         return
       }
-      // setJobId(data.jobId)
 
       // Now we will start polling 
       const interval = setInterval(async () => {
         try {
-          const response = await fetch(`http://localhost:3000/result/${uid}`)
+          const response = await fetch(`/express/result/${uid}`)
           const data = await response.json();
 
-          if (data.status === "completed") {
+          if (data.status === "success") {
+            // If success - call the chat route
+            clearInterval(interval)
+            const chatsRes = await fetch(`/api/chat`,{
+              method:"POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                "session_id":uid,
+                "question":question,
+              })
+            })
+            // console.log(await chatsRes.text());
+            const data = await chatsRes.json()
             const newMessage: ChatMessage = {
               question,
               answer: data.answer ?? '',
@@ -132,13 +145,19 @@ function App() {
     setError('')
 
     try {
-      const formData = new FormData()
-      formData.append('question', question)
-      formData.append('session_id', uid)
+      // const formData = new FormData()
+      // formData.append('question', question)
+      // formData.append('session_id', uid)
 
       const response = await fetch('/api/chat', {
         method: 'POST',
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session_id: uid,
+          question: question,
+        }),
       })
 
       const data = await response.json()
