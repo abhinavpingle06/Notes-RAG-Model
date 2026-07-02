@@ -68,7 +68,7 @@ async def lifespan(app: FastAPI):
     
     store = VectorStore(embeddings=embedding_model, redis_config=redis_config)
     app.state.store = store
-    print(store.store._index.exists())
+    
     # app.state.store.add
 
     print("Startup complete")

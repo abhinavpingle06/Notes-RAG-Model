@@ -11,7 +11,7 @@ const redis = new Redis({
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
-    const response = await axios.post("http://127.0.0.1:8000/api/answer",{
+    const response = await axios.post(`http://127.0.0.1:8000/api/answer?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,
@@ -46,7 +46,7 @@ const worker = new Worker("pdf-processing", async (job) => {
         host: "localhost",
         port: 6379
     },
-    concurrency: 3
+    concurrency: 1
 })
 
 worker.on("completed", (job) => {
