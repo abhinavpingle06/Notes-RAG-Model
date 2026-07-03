@@ -19,33 +19,41 @@ class VectorStore:
             ttl=3600,
         )
         
-    def add(self, session_id, texts):
+    async def add(self, session_id, texts):
 
-        metadata = [
-            {"session_id": session_id}
-            for _ in texts
-        ]
-        print(type(self.store))
-        print(dir(self.store))
-        print(self.store._index)
-        print(self.store._index.exists())
-        if not self.store._index.exists():
-            self.store._index.create()
-
-        print(self.store._index.exists())
-        self.store.add_texts(
-            texts=texts,
-            index_name="index-pdf",
-            metadatas=metadata,
-            ttl=3600,
+        # metadata = [
+        #     {"session_id": session_id}
+        #     for _ in texts
+        # ]
+        combined_text = "\n".join(texts)
+        await redis_server.rpush(
+            f"document:{session_id}",
+            combined_text
         )
+        # print(texts)
+        # print(combined_text)
+        # print(type(self.store))
+        # print(dir(self.store))
+        # print(self.store._index)
+        # print(self.store._index.exists())
+        # if not self.store._index.exists():
+        #     self.store._index.create()
+
+        # print(self.store._index.exists())
+        # self.store.add_texts(
+        #     texts=texts,
+        #     index_name="index-pdf",
+        #     metadatas=metadata,
+        #     ttl=3600,
+        # )
 
     def search(self, session_id, query):
 
         docs = self.store.similarity_search(
-            query=query,
+            # query=query,
+            query="",
             filter=Tag("session_id") == session_id,
-            k=3,
+            k=1000,
         )
         return [doc.page_content for doc in docs]
     

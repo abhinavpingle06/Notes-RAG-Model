@@ -205,6 +205,7 @@ async def api_answer(request: Request,
                 redis_config= request.app.state.redis_config,
                 agent = request.app.state.agent,
             )
+        await rag_engine._initialize()
         
         return {"msg":"success"}
         # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
@@ -255,11 +256,17 @@ async def api_chats(request: Request, data:chatData ):
         #     config= request.app.state.redis_config
         # )
         logger.info("Initializing vector similarity search for chat")
-        similarity_arr = request.app.state.store.search(
-            session_id=data.session_id,
-            query=data.question, 
+        # similarity_arr = request.app.state.store.search(
+        #     session_id=data.session_id,
+        #     query=data.question, 
+        # )
+        # combined_text="\n\n".join(similarity_arr)
+        combined_text = await redis_server.lrange(
+            f"document:{data.session_id}",
+            0,
+            -1
         )
-        combined_text="\n\n".join(similarity_arr)
+
 
         """ GET THE CONTEXT THROUGH SESSION ID"""
         logger.info("Loading convo from redis...")
@@ -270,40 +277,39 @@ async def api_chats(request: Request, data:chatData ):
         else:
             contextObj = []
         
-        prompt_template=f"""
-            You are a helpfile assistant. Use only the information provided in the context below to answer the question.
-        If the answer is not present in the context, respond with "I don't know"
-        If the answer is not
+        prompt_template = f"""
+You are an expert document parser.
 
-        Write a comprehensive answer suitable for a 10-mark exam question. 
-        Include definition, working principle, advantages, disadvantages, applications, and a conclusion with headings and sub-headings and points/markdown. 
-        Use around 600-1000 words. Dont mention the number of words in answer.
+Your task is to extract ALL exam questions from the provided document context.
 
-    Instructions:
+Instructions:
+1. Extract every question exactly as it appears in the document.
+2. Preserve the original wording of each question.
+3. Ignore page numbers, headers, footers, instructions, marks, dates, and formatting.
+4. Identify the subject name from the document if available.
+5. Number the questions according to their order in the PDF.
+6. If the document contains sections (Q1, Q2, OR, etc.), extract every individual question.
+7. Do NOT answer the questions.
+8. Do NOT summarize the document.
+9. Do NOT generate new questions.
+10. Return ONLY the extracted questions.
 
-    * Answer the user's question using ONLY the information available in the document context.
-    * If the context does not contain enough information, reply: **"I couldn't find that information in the uploaded document."**
-    * Use the previous conversation only to understand follow-up questions and maintain context.
-    * Do not invent or assume facts that are not present in the document.
-    * Answer naturally and conversationally.
-    * Use Markdown formatting where appropriate (headings, bullet points, tables, code blocks).
-    * Keep responses concise unless the user explicitly asks for a detailed explanation.
+Output Format:
 
-    ### Previous Conversation
+[1][What is Artificial Intelligence?][Artificial Intelligence]
 
-    {contextObj}
+[2][Explain the architecture of Hadoop.][Big Data Analytics]
 
-    ### Document Context
+[3][Discuss the advantages and disadvantages of Cloud Computing.][Cloud Computing]
 
-    {combined_text}
+If the subject name is not available, use:
+[Question Number][Question][Unknown]
 
-    ### User Question
+document context/document chunks:
+{combined_text}
 
-    {data.question}
-
-    ### Response
-    answer:
-            """
+Response:
+"""
 
         result= request.app.state.agent.invoke({
             "messages":[

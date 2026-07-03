@@ -25,14 +25,14 @@ class RAGEngine:
         self.store = vector_store
         self.redis_config = redis_config
         self.agent = agent
-        self._initialize()
+        # self._initialize()
 
-    def _initialize(self):
+    async def _initialize(self):
         load_dotenv()
         logger.info("Initializing RAG Engine for session %s", self.session_id)
         # 1.Get text string 
         logger.info("Loading PDF and extracting the text...")
-        text=PDFLoader(self.file).load_pdf()
+        text=PDFLoader(self.file).load_pdf(file=self.file)
         logger.info("Loading PDF and extraction completed")
         # 2.Divides in chunks
         logger.info("Splitting in chunks...")
@@ -42,10 +42,10 @@ class RAGEngine:
         logger.info("Innitializing Vector Store with embedding model...")
         # self.vector_store=VectorStore(embeddings=self.embedding_model,session_id=self.session_id, redis_config=self.redis_config)
         logger.info("Innitializing Vector Store with embedding model completed")
-
-        logger.info("Generating Embedddings...")
-        self.store.add(self.session_id, chunks)
-        logger.info("Generating Embedddings Finished")
+    
+        # logger.info("Generating Embedddings...")
+        await self.store.add(self.session_id, chunks)
+        # logger.info("Generating Embedddings Finished")
 
         return {
             "msg":"success"

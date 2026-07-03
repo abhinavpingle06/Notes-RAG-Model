@@ -11,16 +11,19 @@ class PDFLoader:
     def __init__(self, file):
         try:
             if not file:
+                print("not a file")
                 raise FileNotFoundError(f"File not found at {file}")
             
+            print("is a file")
             self.file = file
             
         except Exception as e:
             print(e)
 
-    def load_pdf(self)->str:
+    def load_pdf(self, file)->str:
         try:
-            reader = PdfReader(self.file)
+            print(file)
+            reader = PdfReader(file)
             pages_text = []
             
             for page in reader.pages: # .pages func makes a list of pages as PageObj
@@ -28,7 +31,7 @@ class PDFLoader:
                 if text:
                     pages_text.append(text)
 
-            # print(len(pages_text))
+            print(len(pages_text))
             return "\n".join(pages_text)
 
         except Exception as e:
