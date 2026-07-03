@@ -2,7 +2,7 @@
 
 A Retrieval-Augmented Generation (RAG) application that allows users to upload PDF notes and ask questions about their content.
 
-The system extracts text from PDFs, splits it into chunks, converts those chunks into embeddings, stores them in a FAISS vector store, retrieves the most relevant context using semantic search, and generates answers using Llama 3.3 70B through Groq.
+The system extracts text from PDFs, splits it into chunks, converts those chunks into embeddings, stores them in a Redis vector store, retrieves the most relevant context using semantic search, and generates answers using Llama 3.370B and for context-aware response using Groq.
 
 ---
 
