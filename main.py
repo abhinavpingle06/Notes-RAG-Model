@@ -292,9 +292,9 @@ Instructions:
 7. Do NOT answer the questions.
 8. Do NOT summarize the document.
 9. Do NOT generate new questions.
-10. Return ONLY the extracted questions.
+10. Return ONLY the extracted questions and How many questions are present in all documents?..
 
-Output Format:
+Output Format: (every question after should be one line space)
 
 [1][What is Artificial Intelligence?][Artificial Intelligence]
 
