@@ -11,36 +11,16 @@ const redis = new Redis({
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
-    const response = await axios.post(`http://127.0.0.1:8000/api/answer?session_id=${job.data.session_id}`,{
+    const response = await axios.post(`http://127.0.0.1:8000/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,
         files_data: job.data.files_data,
     })  
-
-    if (response.data.msg === "Success") {
-
-        await redis.set(
-            `answer:${job.data.session_id}`,
-            JSON.stringify({
-                status: "completed",
-                answer: response.data.answer
-            }),
-            "EX",
-            3600
-        );
-
-    } else {
-        await redis.set(
-            `answer:${job.data.session_id}`,
-            JSON.stringify({
-                status: "failed",
-                error: response.data.error
-            }),
-            "EX",
-            3600
-        );
-    }
+    // Data body in stored in response.data
+    if (response.data.msg === "success") {
+        await redis.hincrby(`user:${job.data.session_id}`,"processed_pdf",1)
+    } 
 },{
     connection: {
         host: "localhost",
