@@ -1,75 +1,308 @@
-﻿# 📚 Notes RAG Model
+# 📚 Notes RAG Model
 
-A Retrieval-Augmented Generation (RAG) application that allows users to upload PDF notes and ask questions about their content.
-
-The system extracts text from PDFs, splits it into chunks, converts those chunks into embeddings, stores them in a Redis vector store, retrieves the most relevant context using semantic search, and generates answers using Llama 3.370B and for context-aware response using Groq.
+A full-stack **Retrieval-Augmented Generation (RAG)** application that allows users to upload PDF notes, process them into embeddings, and ask natural language questions to receive context-aware answers powered by Large Language Models (LLMs).
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- Upload PDF documents
-- Extract and process text from PDFs
-- Intelligent text chunking
-- Generate embeddings using HuggingFace models
-- Semantic search using FAISS
-- Context-aware question answering
-- FastAPI backend
-- Groq-powered LLM responses
-- Modular and extensible RAG architecture
+- 📄 Upload PDF notes
+- 🔍 Extract and preprocess document text
+- ✂️ Intelligent text chunking
+- 🧠 Generate embeddings using Hugging Face models
+- 📦 Store embeddings in Redis Vector Store
+- ⚡ Semantic similarity search
+- 🤖 Context-aware responses using Groq LLMs
+- 🌐 React frontend for chat interface
+- 🚀 Express backend for file uploads and APIs
+- 🔄 Background processing using BullMQ workers
+- 🐳 Docker support for easy deployment
 
 ---
 
-## 🏗️ Architecture
-
-### Indexing Pipeline
+# 🏗️ System Architecture
 
 ```text
-PDF
- ↓
-Text Extraction
- ↓
-Chunking
- ↓
-Generate Embeddings
- ↓
-FAISS Vector Store
-```
-
-### Query Pipeline
-
-```text
-User Query
- ↓
-Generate Query Embedding
- ↓
-Similarity Search
- ↓
-Top-K Relevant Chunks
- ↓
-LLM (Llama 3.3 70B)
- ↓
-Answer
+                User
+                  │
+                  ▼
+         React Frontend (Vite)
+                  │
+                  ▼
+         Express Backend API
+                  │
+      Upload PDF / Ask Question
+                  │
+     ┌────────────┴────────────┐
+     ▼                         ▼
+ BullMQ Worker           AI Service (FastAPI)
+     │                         │
+ PDF Processing          Query Processing
+     │                         │
+ Text Extraction      Generate Query Embedding
+     │                         │
+ Chunking             Semantic Search
+     │                         │
+ Embedding Generation         ▼
+     │                Retrieve Relevant Chunks
+     └──────────────► Redis Vector Store
+                              │
+                              ▼
+                     Groq Llama Model
+                              │
+                              ▼
+                         Final Answer
 ```
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠 Tech Stack
 
-### Backend
+## Frontend
+
+- React
+- Vite
+- TypeScript
+- React Markdown
+
+## Backend
+
+- Express.js
+- Node.js
+- BullMQ
+- Multer
+- Redis
+
+## AI Service
 
 - FastAPI
 - LangChain
-- FAISS
-- PyPDF
-
-### Embeddings
-
 - HuggingFace Embeddings
-- BAAI/bge-small-en-v1.5
+- Redis Vector Store
+- Groq API
+- Llama 3
 
-### LLM
+## Infrastructure
 
+- Docker
+- Docker Compose
+- Redis Stack
+
+---
+
+# 📂 Project Structure
+
+```text
+Notes-RAG-Model
+│
+├── frontend/              # React application
+│
+├── backend/               # Express server + BullMQ worker
+│
+├── app/
+│   ├── core/
+│   │     ├── config.py
+│   │     └── redis.py
+│   │
+│   └── rag/
+│         ├── loader.py
+│         ├── chunker.py
+│         ├── embeddings.py
+│         ├── vectorstore.py
+│         └── engine.py
+│
+├── data/                  # Sample PDFs
+│
+├── docker-compose.yml
+│
+└── README.md
+```
+
+---
+
+# 🚀 Workflow
+
+## 1. Upload Notes
+
+The user uploads one or more PDF documents through the frontend.
+
+↓
+
+## 2. Background Processing
+
+BullMQ worker:
+
+- extracts text
+- splits into chunks
+- generates embeddings
+- stores vectors in Redis
+
+↓
+
+## 3. Ask Questions
+
+Users ask questions about uploaded notes.
+
+↓
+
+## 4. Retrieval
+
+The AI service:
+
+- embeds the query
+- performs semantic search
+- retrieves the most relevant chunks
+
+↓
+
+## 5. Response Generation
+
+Relevant context is sent to the Groq-hosted LLM, which generates an accurate answer.
+
+---
+
+# ⚙️ Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/yourusername/Notes-RAG-Model.git
+
+cd Notes-RAG-Model
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file.
+
+```env
+GROQ_API_KEY=your_groq_api_key
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+PORT=3000
+```
+
+---
+
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+Services:
+
+| Service | Port |
+|----------|------|
+| Frontend | 5173 |
+| Backend | 3000 |
+| AI Service | 8000 |
+| Redis | 6379 |
+| Redis Insight | 8001 |
+
+---
+
+# 💬 API Flow
+
+```text
+Frontend
+    │
+    ▼
+Express Backend
+    │
+    ▼
+BullMQ Queue
+    │
+    ▼
+Worker
+    │
+    ▼
+FastAPI AI Service
+    │
+    ▼
+Redis Vector Store
+    │
+    ▼
+Groq LLM
+```
+
+---
+
+# 📚 Technologies Used
+
+- Retrieval-Augmented Generation (RAG)
+- Semantic Search
+- Vector Databases
+- LangChain
+- Hugging Face Embeddings
+- Redis Stack
+- BullMQ
+- FastAPI
+- Express
+- Docker
+
+---
+
+# 🚀 Future Improvements
+
+- Authentication
+- Multiple user workspaces
+- Conversation history
+- Hybrid search (Keyword + Semantic)
+- Document metadata filtering
+- Streaming responses
+- Citation support
+- Multi-document collections
+- Better reranking
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Added feature"
+```
+
+4. Push
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# ⭐ Support
+
+If you found this project useful:
+
+- ⭐ Star the repository
+- 🍴 Fork it
+- 🛠️ Contribute improvements
+
+It helps support future development.
 - Groq API
 - Llama 3.3 70B
 
