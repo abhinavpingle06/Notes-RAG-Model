@@ -159,16 +159,6 @@ def query(request: Request, question:str= Form(...), pdfs: List[UploadFile] = Fi
         data=data
     )
         
-        # rag_engine = RAGEngine(
-        #     file=PDF_PATH,
-        #     session_id="101",
-        #     embedding_model= request.app.state.embedding_model,
-        #     # vectore_store= request.app.state.vector_store,
-        #     redis_config= request.app.state.redis_config,
-        #     agent = request.app.state.agent,
-        # )
-        
-        # answer=rag_engine.generate_answer(question)
         return {
             "question":question,
             # "answer":answer
@@ -208,29 +198,7 @@ async def api_answer(request: Request,
         
         return {"msg":"success"}
         # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
-        answer = rag_engine.generate_answer(data.question)
-
-        # # Setting answer in redis with session as key 
-        # await redis_server.set(
-        #     f"answer:${data.session_id}",
-        #     json.dumps({
-        #         "status": "completed",
-        #         "answer":answer
-        #     }),
-        #     ex=3600,
-        # )
-        # Setting the context 
-        context_obj = {
-            "user_question":data.question,
-            "assistant_answer":answer
-        }
-        await redis_server.rpush(f"session:{data.session_id}:chats",json.dumps(context_obj))
-        await redis_server.expire(f"session:{data.session_id}:chats", 3600) 
-
-        return {
-                "msg": "Success",
-                "answer": answer,
-            }
+        
     except Exception as e:
         logger.exception("Error while processing request")
         return {
@@ -242,18 +210,7 @@ async def api_answer(request: Request,
 @app.post("/api/chat")
 async def api_chats(request: Request, data:chatData ):
     try:
-        # logger.info("Configuration of redis for chat")
-        # # config = RedisConfig(
-        # #         index_name="index-pdf",
-        # #         redis_url="redis://localhost:6379",
-        # #     )
-
-        # # embedding_model = EmbeddingModel(EMBEDDING_MODEL_NAME)
-        # logger.info("Initializing vector store for chat")
-        # store = RedisVectorStore(
-        #     embeddings=request.app.state.embedding_model ,
-        #     config= request.app.state.redis_config
-        # )
+        
         logger.info("Initializing vector similarity search for chat")
         similarity_arr = request.app.state.store.search(
             session_id=data.session_id,

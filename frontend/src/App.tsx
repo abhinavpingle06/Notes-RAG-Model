@@ -17,7 +17,7 @@ interface ChatMessage {
 function App() {
   const [question, setQuestion] = useState('')
   const [notesFiles, setNotesFiles] = useState<File[]>([])
-  const [questionFiles, setQuestionFiles] = useState<File[]>([])
+  const [syllabusFiles, setsyllabusFiles] = useState<File[]>([])
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState(false)
   const [chat , setChat] = useState<boolean>(false)
@@ -44,11 +44,38 @@ function App() {
   }, [messages])
 
   const handleNotesChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNotesFiles(event.target.files ? Array.from(event.target.files) : [])
+    const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+    const MAX_FILES = 3;
+    const files = event.target.files ? Array.from(event.target.files) : [];
+
+    if (files.length > MAX_FILES) {
+      alert(`You can upload a maximum of ${MAX_FILES} files.`);
+      return;
+    }
+
+    for (const file of files) {
+      if (file.size > MAX_SIZE) {
+        alert(`${file.name} is larger than 10 MB.`);
+        event.target.value = "";
+        return;
+      }
+    }
+
+    setNotesFiles(files);
   }
 
-  const handleQuestionFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuestionFiles(event.target.files ? Array.from(event.target.files) : [])
+  const handleSyllabusChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const MAX_SIZE = 4 * 1024 * 1024; // 4 MB
+    const files = event.target.files ? Array.from(event.target.files) : [];
+
+    for (const file of files) {
+      if (file.size > MAX_SIZE) {
+        alert(`${file.name} is larger than 10 MB.`);
+        event.target.value = ""; // Clear the input
+        return;
+      }
+    }
+    setsyllabusFiles(event.target.files ? Array.from(event.target.files) : [])
   }
 
   const handleSubmit = async (event: FormEvent) => {
@@ -62,7 +89,7 @@ function App() {
       const formData = new FormData()
       formData.append('question', question)
       notesFiles.forEach((file) => formData.append('pdfs', file))
-      questionFiles.forEach((file) => formData.append('pdfs', file))
+      syllabusFiles.forEach((file) => formData.append('pdfs', file))
       formData.append('session_id', uid)
 
       const response = await fetch('/express/upload', {
@@ -145,9 +172,6 @@ function App() {
     setError('')
 
     try {
-      // const formData = new FormData()
-      // formData.append('question', question)
-      // formData.append('session_id', uid)
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -225,19 +249,19 @@ function App() {
         <section className="upload-card secondary-card">
           <div className="upload-row">
             <div>
-              <p className="upload-label">Upload the question bank</p>
-              <h2>Question Bank PDFs</h2>
+              <p className="upload-label">Upload the Syllabus PDF</p>
+              <h2>Syllabus PDFs</h2>
             </div>
-            <span className="upload-chip optional">Optional</span>
+            <span className="upload-chip required">Required</span>
           </div>
-          <p className="upload-description">Add one or more optional question bank PDFs to help the assistant answer with syllabus and sample question context.</p>
+          <p className="upload-description">Upload syllabus PDF file. This document will be used to provide syllabus-specific context and improve the accuracy of responses.</p>
           <label className="file-picker" htmlFor="questionFile">
-            <span>{questionFiles.length > 0 ? `${questionFiles.length} selected file${questionFiles.length > 1 ? 's' : ''}` : 'Select optional question PDF(s)'}</span>
-            <input id="questionFile" type="file" accept=".pdf" multiple onChange={handleQuestionFileChange} />
+            <span>{syllabusFiles.length > 0 ? `${syllabusFiles.length} selected file${syllabusFiles.length > 1 ? 's' : ''}` : 'Select optional question PDF(s)'}</span>
+            <input id="questionFile" type="file" accept=".pdf" onChange={handleSyllabusChange}/>
           </label>
-          {questionFiles.length > 0 ? (
+          {syllabusFiles.length > 0 ? (
             <div className="file-list">
-              {questionFiles.map((file, index) => (
+              {syllabusFiles.map((file, index) => (
                 <span key={index} className="file-chip">{file.name}</span>
               ))}
             </div>
@@ -256,10 +280,10 @@ function App() {
           autoComplete="off"
         />
 
-        <button type="submit" className="generate-button" disabled={loading || !question.trim() || notesFiles.length === 0}>
+        <button type="submit" className="generate-button" disabled={loading || !question.trim() || notesFiles.length === 0 || syllabusFiles.length != 1}>
           {loading ? 'Generating…' : 'Generate Answer'}
         </button>
-        {notesFiles.length === 0 ? <p className="field-note">Upload at least one notes PDF before generating an answer.</p> : null}
+        {notesFiles.length === 0 || syllabusFiles.length != 1 ? <p className="field-note">Upload at least one notes PDF before generating an answer.</p> : null}
       </form>
 
       {error ? <div className="status-card error-card">{error}</div> : null}
