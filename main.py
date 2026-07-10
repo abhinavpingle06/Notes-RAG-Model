@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI):
 
     redis_config = RedisConfig(
             index_name="index-pdf",
-            redis_url="redis://localhost:6379",
+            redis_url="redis://redis:6379",
             indexing_algorithm="HNSW",
             metadata_schema=[
                 {
@@ -206,6 +206,11 @@ async def api_answer(request: Request,
             "error": str(e),
             "traceback": traceback.format_exc(),
         }
+    
+    finally :
+        if os.path.exists(local_path):
+            os.remove(local_path)
+            logger.info(f"Deleted local file: {local_path}")
     
 @app.post("/api/chat")
 async def api_chats(request: Request, data:chatData ):

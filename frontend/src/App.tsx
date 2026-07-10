@@ -22,7 +22,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [chat , setChat] = useState<boolean>(false)
   const [error, setError] = useState('')
-  const [uid, setUid] = useState<string | null>(null)
+  const [uid, setUid] = useState<string | Blob >("")
 
   useEffect(() => {
     const saved = window.localStorage.getItem('rag-chat-history')

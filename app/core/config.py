@@ -19,7 +19,7 @@ EMBEDDING_MODEL_NAME="BAAI/bge-small-en-v1.5"
 
 LLM_MODEL_NAME="llama-3.3-70b-versatile"
 
-REDIS_URL="redis://localhost:6379"
+REDIS_URL="redis://redis:6379"
 
 # Top similar embeddins
 TOP_K=3

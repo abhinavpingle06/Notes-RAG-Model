@@ -30,7 +30,7 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    command: npm run bullmq
+    command: npm run worker
     container_name: Notes_Rag_Worker
     depends_on:
       - redis
@@ -39,8 +39,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      env_file:
-        - .env
+    env_file:
+      - .env
     container_name: Notes_Rag_AiService
     ports:
       - "8000:8000"

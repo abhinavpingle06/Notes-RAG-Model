@@ -1,0 +1,70 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Python bytecode
+*.pyo
+*.pyd
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation
+README.md
+
+
+# Node (if present)
+node_modules/
+
+# Large model/cache directories
+.cache/
+.huggingface/
+models/
+
+# VS Code settings
+*.code-workspace

@@ -9,7 +9,7 @@ require('dotenv').config({path:path.resolve(__dirname,"../.env")})
 
 // Initalize
 const redis = new Redis({
-    host: "localhost",
+    host: "redis",
     port: 6379,
 });
 const PORT = 3000;
@@ -20,7 +20,7 @@ const upload = multer({
 
 const jobQueue = new Queue("pdf-processing",{
     connection: {
-        host: "localhost",
+        host: "redis",
         port: 6379
     },
     defaultJobOptions:{

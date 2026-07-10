@@ -5,7 +5,7 @@ const path = require('path')
 require('dotenv').config({path:path.resolve(__dirname,"../.env")})
 
 const redis = new Redis({
-    host: "localhost",
+    host: "redis",
     port: 6379,
 });
 
@@ -23,7 +23,7 @@ const worker = new Worker("pdf-processing", async (job) => {
     } 
 },{
     connection: {
-        host: "localhost",
+        host: "redis",
         port: 6379
     },
     concurrency: 1
