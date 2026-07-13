@@ -9,6 +9,8 @@ RUN npm run build
 
 FROM nginx:alpine AS runner
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
+COPY rate-limit.conf /etc/nginx/conf.d/rate-limit.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # nginx is on 80 port
 EXPOSE 80

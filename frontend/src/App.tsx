@@ -25,23 +25,23 @@ function App() {
   const [uid, setUid] = useState<string | Blob >("")
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('rag-chat-history')
-    if (saved) {
-      try {
-        setMessages(JSON.parse(saved))
-      } catch {
-        setMessages([])
-      }
-    }
+    // const saved = window.localStorage.getItem('rag-chat-history')
+    // if (saved) {
+    //   try {
+    //     setMessages(JSON.parse(saved))
+    //   } catch {
+    //     setMessages([])
+    //   }
+    // }
 
     const uuid = uuidv4()
     setUid(uuid)
     console.log(uuid)
   }, [])
 
-  useEffect(() => {
-    window.localStorage.setItem('rag-chat-history', JSON.stringify(messages))
-  }, [messages])
+  // useEffect(() => {
+  //   window.localStorage.setItem('rag-chat-history', JSON.stringify(messages))
+  // }, [messages])
 
   const handleNotesChange = (event: ChangeEvent<HTMLInputElement>) => {
     const MAX_SIZE = 10 * 1024 * 1024; // 10 MB

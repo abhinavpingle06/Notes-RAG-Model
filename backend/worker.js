@@ -11,7 +11,7 @@ const redis = new Redis({
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
-    const response = await axios.post(`http://127.0.0.1:8000/api/upload?session_id=${job.data.session_id}`,{
+    const response = await axios.post(`http://aiservice:8000/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,

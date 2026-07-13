@@ -9,7 +9,7 @@ services:
       - .env
     container_name: Notes_Rag_Frontend
     ports:
-      - "5173:5173"
+      - "80:80"
     
   backend:
     build:

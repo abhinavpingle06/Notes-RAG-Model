@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 from fastapi import FastAPI, Query, Request, UploadFile, Form, File
 from pydantic import BaseModel
@@ -84,10 +85,6 @@ async def lifespan(app: FastAPI):
 # INITIALIZE 
 app = FastAPI(lifespan=lifespan)
 
-
-print(os.getenv("S3_REGION"))
-print(os.getenv("S3_ACCESS_KEY"))
-print(os.getenv("S3_SECRET_ACCESS_KEY"))
 
 s3 = boto3.client(
     "s3",
@@ -179,7 +176,9 @@ async def api_answer(request: Request,
     try:
         file = data.files_data
         logger.info(f"Downloading file ${file.filename} from S3")
-        local_path = os.path.join(DATA_DIR, file.filename)
+        DATA_DIR = Path("/main/data")
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        local_path = DATA_DIR / file.filename
         s3.download_file(
             os.getenv("S3_BUCKET_NAME"),
             file.s3key,
