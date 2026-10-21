@@ -44,3 +44,31 @@ data
 # OS files
 .DS_Store
 Thumbs.db
+
+# TF
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.tfplan
+tfplan
+plan.out
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+Thumbs.db
+.terraform*
