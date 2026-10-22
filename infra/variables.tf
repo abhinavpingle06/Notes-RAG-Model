@@ -16,3 +16,18 @@ variable "codebase_config" {
       ami = string
     })
 }
+
+variable "github_username" {
+  type = string
+}
+variable "repo_url" {
+  type = string
+}
+
+variable "github_app" {
+  type = object({
+    id = string
+    installation_id = string
+    pem_file = string 
+  })
+}
