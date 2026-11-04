@@ -1,33 +1,13 @@
-variable "jenkins_config" {
-    description = "AMI ID for the Jenkins EC2 instance"
-    type = object({
-      ec2_type = string
-      volume = number
-      volume_type = string
-      ami = string
-    })
-}
-
-variable "codebase_config" {
-    type = object({
-      ec2_type = string
-      volume = number
-      volume_type = string
-      ami = string
-    })
-}
-
-variable "github_username" {
+variable "cloudflare_api" {
   type = string
+  sensitive = true
 }
-variable "repo_url" {
+
+variable "cloudflare_zone_id" {
   type = string
 }
 
-variable "github_app" {
-  type = object({
-    id = string
-    installation_id = string
-    pem_file = string 
-  })
+variable "region_acm" {
+  type = string
+  default = "us-east-1"
 }
