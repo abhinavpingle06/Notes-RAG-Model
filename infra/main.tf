@@ -33,6 +33,11 @@ resource "random_id" "bucket_id" {
 
 module "Frontend" {
   source = "./frontend"
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+    cloudflare    = cloudflare
+  }
   bucket_name = "rag-frontend-bucket-${random_id.bucket_id.hex}"
   frontend_files_path = "../frontend/dist/"
   cloudflare_zone_id = var.cloudflare_zone_id

@@ -74,3 +74,4 @@ plan.out
 .DS_Store
 Thumbs.db
 .terraform*
+infra/terraform.tfvars
