@@ -30,11 +30,11 @@ const worker = new Worker("pdf-processing", async (job) => {
 })
 
 worker.on("completed", (job) => {
-    console.log(`✅ Job ${job.id} completed`);
+    console.log(`Job ${job.id} completed`);
 });
 
 worker.on("failed", (job, err) => {
-    console.error(`❌ Job ${job?.id} failed`, err);
+    console.error(`Job ${job?.id} failed`, err);
 });
 
 worker.on("error", (err) => {
