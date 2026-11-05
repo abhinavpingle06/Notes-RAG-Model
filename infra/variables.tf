@@ -11,3 +11,7 @@ variable "region_acm" {
   type    = string
   default = "us-east-1"
 }
+
+variable "cloudflare_acc_id" {
+  type = string
+}

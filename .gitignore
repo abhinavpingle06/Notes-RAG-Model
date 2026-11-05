@@ -75,3 +75,4 @@ plan.out
 Thumbs.db
 .terraform*
 infra/terraform.tfvars
+.wrangler

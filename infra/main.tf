@@ -42,4 +42,5 @@ module "Frontend" {
   frontend_files_path = "../frontend/dist/"
   cloudflare_zone_id  = var.cloudflare_zone_id
   region_acm          = var.region_acm
+  cloudflare_acc_id = var.cloudflare_acc_id
 }

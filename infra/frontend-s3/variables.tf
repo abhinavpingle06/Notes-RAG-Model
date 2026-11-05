@@ -15,3 +15,7 @@ variable "region_acm" {
   description = "AWS region for ACM certificate"
   type = string
 }
+
+variable "cloudflare_acc_id" {
+  type = string
+}
