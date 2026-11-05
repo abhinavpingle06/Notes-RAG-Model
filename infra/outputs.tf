@@ -7,5 +7,5 @@ output "cdn_ip" {
 }
 
 output "cdn_url" {
-  value = "https://${module.Frontend.cdn_domain_name}"
+  value = "https://rag-app.naamjaap.app"
 }

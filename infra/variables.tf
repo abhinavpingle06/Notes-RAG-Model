@@ -1,5 +1,5 @@
 variable "cloudflare_api" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -8,6 +8,6 @@ variable "cloudflare_zone_id" {
 }
 
 variable "region_acm" {
-  type = string
+  type    = string
   default = "us-east-1"
 }
