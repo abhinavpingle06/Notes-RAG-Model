@@ -10,3 +10,7 @@ variable "cloudflare_api" {
 variable "cloudflare_zone_id" {
   type = string
 }
+
+variable "alb_dns_ip" {
+  type = string
+}

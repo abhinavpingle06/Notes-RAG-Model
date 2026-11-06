@@ -76,3 +76,8 @@ Thumbs.db
 .terraform*
 infra/terraform.tfvars
 .wrangler
+*.key.cert
+*.crt
+*.csr
+*.ext
+*.srl
