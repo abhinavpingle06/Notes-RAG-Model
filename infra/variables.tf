@@ -43,3 +43,11 @@ variable "cloudflare_ipv4_ranges" {
     "198.41.128.0/17"
   ]
 }
+
+variable "acm_validation_domains" {
+  type = set(string)
+
+  default = [
+    "rag-api.naamjaap.app"
+  ]
+}

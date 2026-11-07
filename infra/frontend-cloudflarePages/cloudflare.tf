@@ -23,13 +23,3 @@ resource "cloudflare_dns_record" "rag_cname" {
     cloudflare_pages_domain.rag_domain
   ]
 }
-
-resource "cloudflare_dns_record" "rag_api_cname" {
-  zone_id = var.cloudflare_zone_id
-
-  name = "rag-api"
-  type = "CNAME"
-  content = var.alb_dns_ip
-  ttl = 1
-  proxied = true
-}
