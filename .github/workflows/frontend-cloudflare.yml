@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-deploy.yml'
+    
 
   workflow_dispatch:
 
@@ -54,4 +58,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API }}
           accountId: ${{ secrets.CLOUDFLARE_ACC_ID }}
-          command: pages deploy frontend/dist --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+          command: deploy --name ${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --assets frontend/dist
