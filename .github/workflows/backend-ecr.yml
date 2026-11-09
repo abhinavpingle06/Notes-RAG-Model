@@ -11,6 +11,9 @@ on:
 
   workflow_dispatch:
 
+  repository_dispatch:
+    types: [ecr-ready]
+
 permissions:
   id-token: write
   contents: read
