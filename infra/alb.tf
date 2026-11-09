@@ -68,17 +68,25 @@ resource "aws_lb_listener" "https" {
   }
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
+    target_group_arn = aws_lb_target_group.nginx.arn
   }
 }
 
-resource "aws_lb_target_group" "backend" {
-  name        = "rag-alb-target-backend"
+resource "aws_lb_target_group" "nginx" {
+  name        = "nginx"
   vpc_id      = aws_vpc.rag_backend_vpc.id
   port        = "80"
   protocol    = "HTTP"
   target_type = "ip"
 }
+
+# resource "aws_alb_target_group" "backend" {
+#   name = "rag-alb-target-backend"
+#   vpc_id      = aws_vpc.rag_backend_vpc.id
+#   port        = "3000"
+#   protocol    = "HTTP"
+#   target_type = "ip"
+# }
 
 resource "aws_lb_trust_store" "cloudflare" {
   name                             = "cloudflare-alb-trustStore"

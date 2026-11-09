@@ -48,3 +48,12 @@ module "Frontend" {
   cloudflare_acc_id = var.cloudflare_acc_id
   alb_dns_ip = aws_lb.RAG_LB.dns_name
 }
+
+module "Backend" {
+  source = "./backend"
+  images_list = [  ]
+  aws_registry = aws_ecr_repository.rag_registry.repository_url
+  backend_subnet = aws_subnet.rag_vpc_backend_private_subnet.id
+  nginx_sg = aws_security_group.nginx_sg.id
+  nginx_target_grp = aws_lb_target_group.nginx.arn
+}

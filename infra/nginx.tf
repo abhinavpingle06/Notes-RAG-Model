@@ -1,24 +1,12 @@
 resource "aws_instance" "nginx_app" {
   ami = "ami-0c7632fb77f35db43"
   instance_type = "t3.nano"
-  subnet_id = data.aws_subnet.public.id
+  subnet_id = aws_subnet.rag_vpc_backend_private_subnet.id
    vpc_security_group_ids = [
     aws_security_group.nginx_sg.id
   ]
   tags = {
     Name = "nginx-app"
-  }
-}
-
-data "aws_subnet" "public" {
-  filter {
-    name   = "vpc-id"
-    values = [aws_vpc.rag_backend_vpc.id]
-  }
-
-  filter {
-    name   = "cidr-block"
-    values = ["10.0.2.0/24"]
   }
 }
 

@@ -11,6 +11,9 @@ on:
 
   workflow_dispatch:
 
+  repository_dispatch:
+    types: [ecr-ready]
+
 jobs:
   build:
     name: Build Frontend

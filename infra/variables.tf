@@ -51,3 +51,8 @@ variable "acm_validation_domains" {
     "rag-api.naamjaap.app"
   ]
 }
+
+variable "GITHUB_TOKEN" {
+  type = string
+  sensitive = true
+}
