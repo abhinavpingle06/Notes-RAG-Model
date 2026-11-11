@@ -1,53 +1,65 @@
-from langchain_redis import RedisVectorStore
-from redisvl.query.filter import Tag
-from app.core.redis import redis_server
-from langchain_redis import RedisConfig
 import logging
+
+from langchain_redis import RedisVectorStore
+from qdrant_client import QdrantClient, models
+from langchain_qdrant import QdrantVectorStore
+from langchain_core.documents import Document
 
 logger = logging.getLogger(__name__)
 
 class VectorStore:
-    """
-    FAIIS-based vector store for document retreival
-    """
-
     def __init__(self, embeddings, redis_config):
-        self.store = RedisVectorStore(
-            index_name="index-pdf",
-            embeddings=embeddings.model,
-            config=redis_config,
-            ttl=3600,
+        self.embeddings = embeddings
+
+        dimension = len(embeddings.embed_query("dimension test"))
+        if not self.client.collection_exists(collection_name="notes_collection"):
+            self.client.create_collection(
+                collection_name="notes_collection",
+                vectors_config=models.VectorParams(
+                    size=dimension,
+                    distance=models.Distance.COSINE
+                )
+            )
+        self.store = QdrantVectorStore(
+            client=self.client,
+            collection_name="notes_collection",
+            embedding=embeddings.model,
         )
-        
+
     def add(self, session_id, texts):
-
-        metadata = [
-            {"session_id": session_id}
-            for _ in texts
+        documents = [
+            Document(
+                page_content=text,
+                metadata={
+                    "session_id": session_id
+                }
+            )
+            for text in texts
         ]
-        print(type(self.store))
-        print(dir(self.store))
-        print(self.store._index)
-        print(self.store._index.exists())
-        if not self.store._index.exists():
-            self.store._index.create()
-
-        print(self.store._index.exists())
-        self.store.add_texts(
-            texts=texts,
-            index_name="index-pdf",
-            metadatas=metadata,
-            ttl=3600,
-        )
+        if documents:
+            self.store.add_documents(documents)
 
     def search(self, session_id, query):
+        session_filter = models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="metadata.session_id",
+                    match=models.MatchValue(
+                        value=session_id
+                    )
+                )
+            ]
+        )
 
         docs = self.store.similarity_search(
             query=query,
-            filter=Tag("session_id") == session_id,
             k=3,
+            filter=session_filter
         )
-        return [doc.page_content for doc in docs]
+
+        return [
+            doc.page_content for doc in docs
+        ]
     
     def build(self, texts):
         """

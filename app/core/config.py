@@ -24,6 +24,9 @@ REDIS_URL="redis://redis:6379"
 # Top similar embeddins
 TOP_K=3
 
-# REDIS
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
+# QDRANT
+QDRANT_URL = os.getenv(
+    "QDRANT_URL",
+    "http://qdrant:6333"
+)
+QDRANT_COLLECTION = "notes_collection"

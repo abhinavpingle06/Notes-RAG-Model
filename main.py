@@ -4,8 +4,6 @@ from fastapi import FastAPI, Query, Request, UploadFile, Form, File
 from pydantic import BaseModel
 import json
 import traceback
-from langchain_redis import RedisVectorStore,RedisConfig
-from redisvl.query.filter import Tag
 from langchain.agents import create_agent
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_groq import ChatGroq
@@ -58,23 +56,8 @@ async def lifespan(app: FastAPI):
     system_prompt="You are a helpful assistant",
     )
 
-    redis_config = RedisConfig(
-            index_name="index-pdf",
-            redis_url="redis://redis:6379",
-            indexing_algorithm="HNSW",
-            metadata_schema=[
-                {
-                    "name":"session_id",
-                    "type":"tag"
-                }
-            ]
-        )
-    app.state.redis_config = redis_config
-    
-    store = VectorStore(embeddings=embedding_model, redis_config=redis_config)
+    store = VectorStore(embeddings=embedding_model)
     app.state.store = store
-    
-    # app.state.store.add
 
     print("Startup complete")
 
@@ -186,14 +169,7 @@ async def api_answer(request: Request,
         )
 
         logger.info(f"Successfully Downloaded file ${file.filename} from S3") 
-        rag_engine = RAGEngine(
-                file= local_path,
-                session_id= data.session_id,
-                embedding_model= request.app.state.embedding_model,
-                vector_store= request.app.state.store,
-                redis_config= request.app.state.redis_config,
-                agent = request.app.state.agent,
-            )
+        
         
         return {"msg":"success"}
         # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC

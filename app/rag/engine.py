@@ -18,12 +18,11 @@ class RAGEngine:
     Initialized once and serves all queries
     """
 
-    def __init__(self, file, session_id, embedding_model, redis_config, vector_store, agent):
+    def __init__(self, file, session_id, embedding_model, vector_store, agent):
         self.file = file
         self.session_id = session_id
         self.embedding_model = embedding_model
         self.store = vector_store
-        self.redis_config = redis_config
         self.agent = agent
         self._initialize()
 
