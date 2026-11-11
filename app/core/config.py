@@ -21,6 +21,10 @@ LLM_MODEL_NAME="llama-3.3-70b-versatile"
 
 REDIS_URL="redis://redis:6379"
 
+# REDIS
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT")
+
 # Top similar embeddins
 TOP_K=3
 

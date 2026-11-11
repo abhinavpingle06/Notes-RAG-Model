@@ -169,8 +169,14 @@ async def api_answer(request: Request,
         )
 
         logger.info(f"Successfully Downloaded file ${file.filename} from S3") 
-        
-        
+        rag_engine = RAGEngine(
+        file=local_path,
+        session_id=data.session_id,
+        embedding_model=request.app.state.embedding_model,
+        vector_store=request.app.state.store,
+        agent=request.app.state.agent,
+        )
+  
         return {"msg":"success"}
         # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
         
