@@ -13,6 +13,8 @@ from contextlib import asynccontextmanager
 import requests
 import boto3
 import os
+import os
+import logging
 from dotenv import load_dotenv
 
 from app.rag.vectorstore import VectorStore
@@ -24,6 +26,16 @@ from app.core.config import DATA_DIR, PDF_PATH
 from app.core.redis import redis_server
 from app.rag.embeddings import EmbeddingModel
 from app.core.config import EMBEDDING_MODEL_NAME, LLM_MODEL_NAME, REDIS_URL
+
+os.makedirs("logs", exist_ok=True)
+
+logging.basicConfig(
+    handlers=[
+        logging.FileHandler("logs/latency.log"),
+        logging.StreamHandler()
+    ],
+    level=logging.INFO
+)
 
 class FILES(BaseModel):
     filename:str

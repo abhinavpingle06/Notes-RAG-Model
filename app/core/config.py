@@ -17,7 +17,7 @@ CHUNK_OVERLAP=150
 
 EMBEDDING_MODEL_NAME="BAAI/bge-small-en-v1.5"
 
-LLM_MODEL_NAME="llama-3.3-70b-versatile"
+LLM_MODEL_NAME="openai/gpt-oss-120b"
 
 REDIS_URL="redis://redis:6379"
 
@@ -34,3 +34,5 @@ QDRANT_URL = os.getenv(
     "http://qdrant:6333"
 )
 QDRANT_COLLECTION = "notes_collection"
+# Vector expiration time (seconds)
+VECTOR_TTL = int(os.getenv("VECTOR_TTL", "86400"))
