@@ -68,7 +68,7 @@ resource "aws_lb_listener" "https" {
   }
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.express_backend
+    target_group_arn = aws_lb_target_group.express_backend.arn
   }
 }
 
@@ -86,6 +86,18 @@ resource "aws_alb_target_group" "express_backend" {
   port        = "3000"
   protocol    = "HTTP"
   target_type = "ip"
+
+  health_check {
+    enabled             = true
+    protocol            = "HTTP"
+    path                = "/health"
+    port                = "traffic-port"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    interval            = 30
+    timeout             = 5
+    matcher             = "200-399"
+  }
 }
 
 resource "aws_lb_trust_store" "cloudflare" {
