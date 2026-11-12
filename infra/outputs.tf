@@ -27,7 +27,7 @@ output "pages_domain_url" {
 
 output "api_url" {
   description = "Public API hostname"
-  value       = "https://api.naamjaap.app"
+  value       = "https://rag-api.naamjaap.app"
 }
 
 output "alb_arn" {

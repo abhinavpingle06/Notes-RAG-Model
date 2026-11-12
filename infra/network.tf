@@ -95,3 +95,26 @@ resource "aws_route_table_association" "private_assoc_2" {
   subnet_id      = aws_subnet.rag_vpc_backend_private_subnet_2.id
   route_table_id = aws_route_table.private_rt.id
 }
+
+# NAT GATEWAY
+
+resource "aws_nat_gateway" "rag_nat" {
+  allocation_id = aws_eip.nat_eip.id
+
+  subnet_id = aws_subnet.rag_vpc_alb_public_subnet.id
+
+  tags = {
+    Name    = "rag-nat-gateway"
+    Project = "Simple-Docs-RAG"
+  }
+
+  depends_on = [
+    aws_internet_gateway.rag_igw
+  ]
+}
+
+resource "aws_route" "private_nat_route" {
+  route_table_id         = aws_route_table.private_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.rag_nat.id
+}

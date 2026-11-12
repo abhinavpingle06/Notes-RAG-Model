@@ -10,6 +10,10 @@ variable "nginx_sg" {
   type = string
 }
 
+variable "alb_sg" {
+  type = string
+}
+
 variable "nginx_target_grp" {
   type = string
 }
@@ -25,3 +29,4 @@ variable "vpc_id" {
 variable "private_route_table_ids" {
   type = list(string)
 }
+
