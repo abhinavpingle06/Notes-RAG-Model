@@ -38,6 +38,16 @@ resource "aws_subnet" "rag_vpc_backend_private_subnet" {
     Type = "Private"
   }
 }
+resource "aws_subnet" "rag_vpc_backend_private_subnet_2" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.12.0/24"
+  availability_zone = "ap-south-1b"
+
+  tags = {
+    Name = "rag-private-backend-subnet-2"
+    Type = "Private"
+  }
+}
 
 resource "aws_internet_gateway" "rag_igw" {
   vpc_id = aws_vpc.rag_backend_vpc.id
@@ -79,5 +89,9 @@ resource "aws_route_table_association" "public_assoc_2" {
 
 resource "aws_route_table_association" "private_assoc_1" {
   subnet_id      = aws_subnet.rag_vpc_backend_private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "private_assoc_2" {
+  subnet_id      = aws_subnet.rag_vpc_backend_private_subnet_2.id
   route_table_id = aws_route_table.private_rt.id
 }

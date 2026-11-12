@@ -51,9 +51,11 @@ module "Frontend" {
 
 module "Backend" {
   source = "./backend"
-  images_list = [  ]
   aws_registry = aws_ecr_repository.rag_registry.repository_url
-  backend_subnet = aws_subnet.rag_vpc_backend_private_subnet.id
+  vpc_id = aws_vpc.rag_backend_vpc.id
+  backend_subnet = [ aws_subnet.rag_vpc_backend_private_subnet.id , aws_subnet.rag_vpc_backend_private_subnet_2.id ]
   nginx_sg = aws_security_group.nginx_sg.id
   nginx_target_grp = aws_lb_target_group.nginx.arn
+  express_backend_tg = aws_alb_target_group.express_backend.arn
+  private_route_table_ids = [ aws_route_table.private_rt ]
 }

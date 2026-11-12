@@ -80,13 +80,13 @@ resource "aws_lb_target_group" "nginx" {
   target_type = "ip"
 }
 
-# resource "aws_alb_target_group" "backend" {
-#   name = "rag-alb-target-backend"
-#   vpc_id      = aws_vpc.rag_backend_vpc.id
-#   port        = "3000"
-#   protocol    = "HTTP"
-#   target_type = "ip"
-# }
+resource "aws_alb_target_group" "express_backend" {
+  name = "rag-alb-target-backend"
+  vpc_id      = aws_vpc.rag_backend_vpc.id
+  port        = "3000"
+  protocol    = "HTTP"
+  target_type = "ip"
+}
 
 resource "aws_lb_trust_store" "cloudflare" {
   name                             = "cloudflare-alb-trustStore"
