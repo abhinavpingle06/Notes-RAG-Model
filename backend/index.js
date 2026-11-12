@@ -119,6 +119,23 @@ app.get("/express/result/:session_id", async (req, res) => {
     });
 });
 
+
+// Health check endpoint for AWS ALB
+app.get("/health", async (req, res) => {
+    try {
+        return res.status(200).json({
+            status: "healthy",
+            service: "express-backend",
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        return res.status(503).json({
+            status: "unhealthy"
+        });
+    }
+});
+
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

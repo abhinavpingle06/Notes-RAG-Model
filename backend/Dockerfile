@@ -6,3 +6,5 @@ COPY . .
 
 # For Express
 EXPOSE 3000
+
+CMD ["npm", "run", "express"]
