@@ -42,21 +42,21 @@ provider "cloudflare" {
 # }
 
 module "Frontend" {
-  source = "./frontend-cloudflarePages"
+  source             = "./frontend-cloudflarePages"
   cloudflare_zone_id = var.cloudflare_zone_id
-  cloudflare_api = var.cloudflare_api
-  cloudflare_acc_id = var.cloudflare_acc_id
-  alb_dns_ip = aws_lb.RAG_LB.dns_name
+  cloudflare_api     = var.cloudflare_api
+  cloudflare_acc_id  = var.cloudflare_acc_id
+  alb_dns_ip         = aws_lb.RAG_LB.dns_name
 }
 
 module "Backend" {
-  source = "./backend"
-  aws_registry = aws_ecr_repository.rag_registry.repository_url
-  vpc_id = aws_vpc.rag_backend_vpc.id
-  backend_subnet = [ aws_subnet.rag_vpc_backend_private_subnet.id , aws_subnet.rag_vpc_backend_private_subnet_2.id ]
-  alb_sg = aws_security_group.alb_sg.id
-  nginx_sg = aws_security_group.nginx_sg.id
-  nginx_target_grp = aws_lb_target_group.nginx.arn
-  express_backend_tg = aws_alb_target_group.express_backend.arn
-  private_route_table_ids = [ aws_route_table.private_rt.id ]
+  source                  = "./backend"
+  aws_registry            = aws_ecr_repository.rag_registry.repository_url
+  vpc_id                  = aws_vpc.rag_backend_vpc.id
+  backend_subnet          = [aws_subnet.rag_vpc_backend_private_subnet.id, aws_subnet.rag_vpc_backend_private_subnet_2.id]
+  alb_sg                  = aws_security_group.alb_sg.id
+  nginx_sg                = aws_security_group.nginx_sg.id
+  nginx_target_grp        = aws_lb_target_group.nginx.arn
+  express_backend_tg      = aws_lb_target_group.express_backend.arn
+  private_route_table_ids = [aws_route_table.private_rt.id]
 }

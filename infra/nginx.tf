@@ -1,8 +1,8 @@
 resource "aws_instance" "nginx_app" {
-  ami = "ami-0c7632fb77f35db43"
+  ami           = "ami-0c7632fb77f35db43"
   instance_type = "t3.nano"
-  subnet_id = aws_subnet.rag_vpc_backend_private_subnet.id
-   vpc_security_group_ids = [
+  subnet_id     = aws_subnet.rag_vpc_backend_private_subnet.id
+  vpc_security_group_ids = [
     aws_security_group.nginx_sg.id
   ]
   tags = {

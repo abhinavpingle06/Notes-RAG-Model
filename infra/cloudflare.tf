@@ -1,10 +1,10 @@
 resource "cloudflare_dns_record" "rag_api_cname" {
   zone_id = var.cloudflare_zone_id
 
-  name = "rag-api"
-  type = "CNAME"
+  name    = "rag-api"
+  type    = "CNAME"
   content = aws_lb.RAG_LB.dns_name
-  ttl = 1
+  ttl     = 1
   proxied = true
 }
 

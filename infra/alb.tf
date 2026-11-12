@@ -16,16 +16,6 @@ resource "aws_vpc_security_group_ingress_rule" "rag-alb-inbound-https" {
   to_port           = 443
 }
 
-resource "aws_vpc_security_group_ingress_rule" "rag-alb-inbound-http" {
-  for_each = toset(var.cloudflare_ipv4_ranges)
-
-  security_group_id = aws_security_group.alb_sg.id
-  cidr_ipv4         = each.value
-  from_port         = 80
-  ip_protocol       = "tcp"
-  to_port           = 80
-}
-
 resource "aws_vpc_security_group_egress_rule" "rag-alb-outbound" {
   security_group_id = aws_security_group.alb_sg.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -59,11 +49,11 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.RAG_LB.arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn = aws_acm_certificate_validation.cert_validation_from_cloudflare.certificate_arn
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = aws_acm_certificate_validation.cert_validation_from_cloudflare.certificate_arn
 
   mutual_authentication {
-    mode = "verify"
+    mode            = "verify"
     trust_store_arn = aws_lb_trust_store.cloudflare.arn
   }
   default_action {
@@ -80,8 +70,8 @@ resource "aws_lb_target_group" "nginx" {
   target_type = "ip"
 }
 
-resource "aws_alb_target_group" "express_backend" {
-  name = "rag-alb-target-backend"
+resource "aws_lb_target_group" "express_backend" {
+  name        = "rag-alb-target-backend"
   vpc_id      = aws_vpc.rag_backend_vpc.id
   port        = "3000"
   protocol    = "HTTP"

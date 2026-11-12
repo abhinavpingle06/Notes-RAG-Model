@@ -53,6 +53,6 @@ variable "acm_validation_domains" {
 }
 
 variable "GITHUB_TOKEN" {
-  type = string
+  type      = string
   sensitive = true
 }

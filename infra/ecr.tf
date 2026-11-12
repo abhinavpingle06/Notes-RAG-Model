@@ -4,14 +4,14 @@ resource "aws_ecr_repository" "rag_registry" {
     scan_on_push = true
   }
   image_tag_mutability = "MUTABLE"
-  force_delete = true
+  force_delete         = true
 }
 
 resource "terraform_data" "github_trigger" {
-  triggers_replace = [ aws_ecr_repository.rag_registry.repository_url ]
+  triggers_replace = [aws_ecr_repository.rag_registry.repository_url]
   provisioner "local-exec" {
     interpreter = ["PowerShell", "-NoProfile", "-Command"]
-    command = <<-ST
+    command     = <<-ST
   $headers = @{
     Accept = "application/vnd.github+json"
     Authorization = "Bearer $env:GITHUB_TOKEN"
@@ -34,5 +34,5 @@ ST
       GITHUB_TOKEN = var.GITHUB_TOKEN
     }
   }
-  
+
 }
