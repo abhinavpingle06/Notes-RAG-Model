@@ -61,4 +61,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API }}
           accountId: ${{ secrets.CLOUDFLARE_ACC_ID }}
-          command: deploy --name ${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --assets frontend/dist --compatibility-date=2026-11-08
+          command: pages deploy frontend/dist --project-name ${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --branch main
