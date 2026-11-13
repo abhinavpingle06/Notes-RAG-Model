@@ -1,12 +1,13 @@
 import { type FormEvent, useEffect, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { AlertCircle, X, ChevronDown, ChevronUp, Sparkles, FileText, ArrowRight } from 'lucide-react'
+import { AlertCircle, X, ChevronDown, ChevronUp, FileText, ArrowRight, FaceSlightlySmilingIcon } from 'lucide-react'
 import { Header } from './components/Header'
 import { DocumentUpload } from './components/DocumentUpload'
 import { ChatMessageItem } from './components/ChatMessageItem'
 import { ChatInput } from './components/ChatInput'
 import { LoadingIndicator } from './components/LoadingIndicator'
 import type { ChatMessage, ProcessingStage } from './types/chat'
+import { express_api } from './axios'
 
 const SUGGESTION_PROMPTS = [
   'Summarize the core syllabus units',
@@ -54,6 +55,59 @@ function App() {
     setIsDocsCollapsed(false)
   }
 
+  // For sequential Polling 
+  const pollForResult = async (sessionId: string, currentQ: string) => {
+    const maxAttempts = 60;
+    const pollingInterval = 2000;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+
+      // Wait 2 seconds before the next poll
+      await new Promise(resolve => setTimeout(resolve, pollingInterval));
+
+      const pollRes = await express_api.get(`/express/result/${sessionId}`);
+      const pollData = pollRes.data;
+
+      if (pollData.status === 'success') {
+
+        setStage('answering');
+
+        const chatsRes = await express_api.post('/api/chat', {
+          session_id: sessionId,
+          question: currentQ,
+        });
+
+        const chatData = chatsRes.data;
+
+        if (chatData.error) {
+          throw new Error(chatData.error);
+        }
+
+        const newMessage: ChatMessage = {
+          id: uuidv4(),
+          question: currentQ,
+          answer: chatData.answer ?? 'No answer generated.',
+          createdAt: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, newMessage]);
+        setQuestion('');
+        setChat(true);
+        setIsDocsCollapsed(true);
+
+        return;
+      }
+
+      if (pollData.status === 'failed') {
+        throw new Error(
+          pollData.error || 'Document processing failed.'
+        );
+      }
+    }
+
+    throw new Error('Document processing timed out. Please try again.');
+  };
+
   // Initial Document Upload + First Question Submit
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -82,17 +136,14 @@ function App() {
     try {
       const formData = new FormData()
       formData.append('question', currentQ)
-      notesFiles.forEach((file) => formData.append('pdfs', file))
-      syllabusFiles.forEach((file) => formData.append('pdfs', file))
+      notesFiles.forEach((file) => formData.append('notes_pdfs', file))
+      syllabusFiles.forEach((file) => formData.append('syllabus_pdf', file))
       formData.append('session_id', uid)
 
-      const response = await fetch('/express/upload', {
-        method: 'POST',
-        body: formData,
-      })
+      const response = await express_api.post(`/express/upload`, formData )
+      const data = response.data
 
-      const data = await response.json()
-      if (!response.ok || data.error) {
+      if (data.error) {
         setError(data.error || 'Failed to upload documents to server.')
         setLoading(false)
         setStage('idle')
@@ -102,76 +153,22 @@ function App() {
       // Upload successful -> Transition to background processing & vectorizing
       setStage('processing')
 
-      let pollAttempts = 0
-      const maxAttempts = 60 // 2 minutes maximum (60 * 2s)
+      // Calling polling
+      try {
+        await pollForResult(uid, currentQ);
 
-      const interval = setInterval(async () => {
-        pollAttempts += 1
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : 'Document processing failed.'
+        );
 
-        if (pollAttempts > maxAttempts) {
-          clearInterval(interval)
-          setLoading(false)
-          setStage('idle')
-          setError('Document processing timed out. Please try again or check the server status.')
-          return
-        }
+      } finally {
+        setLoading(false);
+        setStage('idle');
+      }
 
-        try {
-          const pollRes = await fetch(`/express/result/${uid}`)
-          const pollData = await pollRes.json()
-
-          if (pollData.status === 'success') {
-            clearInterval(interval)
-            setStage('answering')
-
-            // Fetch answer from chat API
-            const chatsRes = await fetch('/api/chat', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                session_id: uid,
-                question: currentQ,
-              }),
-            })
-
-            const chatData = await chatsRes.json()
-            const newMessage: ChatMessage = {
-              id: uuidv4(),
-              question: currentQ,
-              answer: chatData.answer ?? 'No answer generated.',
-              createdAt: new Date().toISOString(),
-            }
-
-            setMessages((prev) => [...prev, newMessage])
-            setQuestion('')
-            setLoading(false)
-            setStage('idle')
-            setChat(true)
-            setIsDocsCollapsed(true)
-          } else if (pollData.status === 'failed') {
-            clearInterval(interval)
-            const errorMsg: ChatMessage = {
-              id: uuidv4(),
-              question: currentQ,
-              answer: pollData.error || 'Document processing failed on the backend.',
-              createdAt: new Date().toISOString(),
-              isError: true,
-            }
-            setMessages((prev) => [...prev, errorMsg])
-            setQuestion('')
-            setLoading(false)
-            setStage('idle')
-            setChat(true)
-          }
-        } catch {
-          clearInterval(interval)
-          setLoading(false)
-          setStage('idle')
-          setError('Polling connection failed. Please check your network connection.')
-        }
-      }, 2000)
     } catch {
       setError('Could not reach the server. Please verify the backend services are running.')
       setLoading(false)
@@ -192,19 +189,13 @@ function App() {
     setQuestion('')
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          session_id: uid,
-          question: currentQ,
-        }),
+      const response = await express_api.post(`/api/chat`, {
+        session_id: uid,
+        question: currentQ,
       })
+      const data = response.data
 
-      const data = await response.json()
-      if (!response.ok || data.error) {
+      if (data.error) {
         const errorMsg: ChatMessage = {
           id: uuidv4(),
           question: currentQ,
@@ -270,7 +261,7 @@ function App() {
         {!chat && (
           <div className="hero-panel">
             <div className="hero-badge">
-              <Sparkles size={16} />
+              <FaceSlightlySmilingIcon size={16} />
               <span>Next-Gen RAG Engine</span>
             </div>
             <h1 className="hero-title">

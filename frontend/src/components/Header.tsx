@@ -1,5 +1,5 @@
 import React from 'react'
-import { Sparkles, RotateCcw, FileText, CheckCircle2 } from 'lucide-react'
+import { Sparkles, RotateCcw, FileText, CheckCircle2, Space, AppleIcon, NotebookDotIcon, DownloadCloudIcon, NotebookPen, NotepadTextDashedIcon, NotepadText, NotebookTabs, EighthNotesIcon, BotMessageSquare } from 'lucide-react'
 
 interface HeaderProps {
   onReset: () => void
@@ -18,9 +18,9 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="app-header">
       <div className="header-brand">
-        <div className="brand-icon-wrapper">
-          <Sparkles className="brand-icon" size={20} />
-        </div>
+        {/* <div className="brand-icon-wrapper"> */}
+          <BotMessageSquare className="brand-icon" size={35} />
+        {/* </div> */}
         <div className="brand-text">
           <div className="brand-title-row">
             <span className="brand-title">NotesAssist</span>
