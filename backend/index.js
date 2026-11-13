@@ -1,47 +1,88 @@
 const express = require('express')
 const multer = require('multer')
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
-const { Queue, tryCatch }= require('bullmq')
+const { Queue } = require('bullmq');
+const axios = require('axios');
 const cors = require("cors")
 const path = require('path')
 const Redis = require('ioredis')
-require('dotenv').config({path:path.resolve(__dirname,"../.env")})
+const scanFile = require('./utils/malware_scanner');
 
-// Initalize
-const redis = new Redis({
-    host: "redis",
-    port: 6379,
-});
-const PORT = 3000;
+if(process.env.NODE_ENV !== "production" ){
+    require('dotenv').config({
+        path: path.resolve(__dirname, './.env')
+    });
+}
 
-const upload = multer({
-    storage:multer.memoryStorage()
-})
+// Initalize configurations
+const PORT = Number(process.env.PORT) || 3000;
+const REDIS_URL = process.env.REDIS_URL;
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+const AWS_REGION = process.env.AWS_REGION || process.env.S3_REGION;
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL;
 
-const jobQueue = new Queue("pdf-processing",{
-    connection: {
-        host: "redis",
-        port: 6379
-    },
-    defaultJobOptions:{
-        removeOnComplete:true,
-        removeOnFail:{count:3}
+if (!REDIS_URL || !S3_BUCKET_NAME || !AWS_REGION || !AI_SERVICE_URL) {
+    throw new Error('Missing required environment variables');
+}
+
+// WE WILL PREFRE CONTAINERIZED REDIS 
+const redisConnection = new Redis(REDIS_URL, {
+    maxRetriesPerRequest: null,
+    enableReadyCheck: true,
+    retryStrategy(times) {
+        return Math.min(times * 500, 5000);
     }
-})
+});
+
+redisConnection.on('error', (error) => {
+    console.error('Redis connection error:', error.message);
+});
+
+// CONFIIGURE BULLMQ
+const jobQueue = new Queue('pdf-processing', {
+    connection: redisConnection,
+    defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: {
+            count: 3
+        }
+    }
+});
 
 const s3 = new S3Client({
-    region: process.env.S3_REGION,
-    credentials:{
-        accessKeyId: process.env.S3_ACCESS_KEY,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
-    }
-})
+    region: AWS_REGION
+});
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS?.split(',') : [''] ;
+if (!process.env.CORS_ORIGINS){
+    console.log("No origin were provided")
+}
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    console.log(`[EXPRESS] ${req.method} ${req.originalUrl}`);
+    next();
+});
+
+// MULTER
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 20 * 1024 * 1024,
+        files: 4
+    },
+    fileFilter(req, file, callback) {
+        if (file.mimetype !== 'application/pdf') {
+            return callback(new Error('Only PDF files are allowed'));
+        }
+
+        callback(null, true);
+    }
+});
 
 // Routes
 app.get("/express", (req, res) => {
@@ -49,15 +90,41 @@ app.get("/express", (req, res) => {
 });
 
 app.post("/express/upload",
-    upload.array("pdfs"), // Middleware
+    upload.fields([
+        { name: "notes_pdfs", maxCount: 4 },
+        { name: "syllabus_pdf", maxCount: 4 }
+    ]), // Middleware
     async (req, res) => {  // Route handeling
         try {
             const { question, session_id } = req.body;
-            const files = req.files;
-            // console.log(question, session_id, files)
+
+            const notesFiles = (req.files?.notes_pdfs || []).map(file => ({
+                ...file,
+                category: "notes"
+            }));
+
+            const syllabusFiles = (req.files?.syllabus_pdf || []).map(file => ({
+                ...file,
+                category: "syllabus"
+            }));
+
+            const files = [...notesFiles, ...syllabusFiles];
+
+            if (!files || files.length === 0) {
+                return res.status(400).json({
+                    error: "No PDF files uploaded"
+                });
+            }
+
+            // Scan the PDFS
+            // await Promise.all(
+            //     files.map(file => scanFile(file.buffer))
+            // );
+
+            console.log("All PDFs scanned successfully");
 
             // For polling tracking...
-            await redis
+            await redisConnection
                 .multi()
                 .hset(`user:${session_id}`, {
                     uploaded_pdf: files.length,
@@ -70,7 +137,7 @@ app.post("/express/upload",
             await Promise.all(
                 files.map( async (file) => {
                     // Key for storing path in s3
-                    const key = `upload/${session_id}/${file.originalname}`
+                    const key = `upload/${session_id}/${Date.now()}-${file.originalname}`
                     await s3.send(new PutObjectCommand({
                         Bucket: process.env.S3_BUCKET_NAME,
                         Key: key,
@@ -93,10 +160,12 @@ app.post("/express/upload",
                 session_id
             });
         } catch (error) {
-            return res.status(404).json({
-                status:"Error",
-                error: String(error),
-            })
+            console.error("UPLOAD ERROR:", error);
+
+            return res.status(500).json({
+                status: "Error",
+                error: error.message
+            });
         }
         
 });
@@ -106,7 +175,7 @@ app.get("/express/result/:session_id", async (req, res) => {
 
     const { session_id } = req.params;
 
-    const result = await redis.hgetall(`user:${session_id}`);
+    const result = await redisConnection.hgetall(`user:${session_id}`);
 
     if (Number(result.uploaded_pdf) === Number(result.processed_pdf)) {
         return res.json({
@@ -131,6 +200,44 @@ app.get("/health", async (req, res) => {
     } catch (error) {
         return res.status(503).json({
             status: "unhealthy"
+        });
+    }
+});
+
+
+app.post("/api/chat", async (req, res) => {
+    try {
+        const { session_id, question } = req.body;
+
+        if (!session_id || !question) {
+            return res.status(400).json({
+                error: "session_id and question are required"
+            });
+        }
+
+        // Forward request to AI service
+        const aiResponse = await axios.post(
+            `${process.env.AI_SERVICE_URL}/api/chat`,
+            {
+                session_id,
+                question
+            },
+            {
+                timeout: 120000
+            }
+        );
+
+        // Send AI response back to frontend
+        return res.status(200).json(aiResponse.data);
+
+    } catch (error) {
+        console.error(
+            "Chat API Error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(error.response?.status || 502).json({
+            error: "Failed to communicate with AI service"
         });
     }
 });

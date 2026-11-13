@@ -2,16 +2,24 @@ const {Worker} = require("bullmq")
 const axios = require('axios')
 const Redis = require("ioredis");
 const path = require('path')
-require('dotenv').config({path:path.resolve(__dirname,"../.env")})
+require('dotenv').config({path:path.resolve(__dirname,"./.env.local")})
 
-const redis = new Redis({
-    host: "redis",
-    port: 6379,
+const redisConnection = new Redis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    enableReadyCheck: true
+});
+
+redisConnection.on('connect', () => {
+    console.log('Redis connected');
+});
+
+redisConnection.on('error', (err) => {
+    console.error('Redis connection error:', err.message);
 });
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
-    const response = await axios.post(`http://aiservice:8000/api/upload?session_id=${job.data.session_id}`,{
+    const response = await axios.post(`http://${process.env.AI_SERVICE_URL}/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,
@@ -19,13 +27,10 @@ const worker = new Worker("pdf-processing", async (job) => {
     })  
     // Data body in stored in response.data
     if (response.data.msg === "success") {
-        await redis.hincrby(`user:${job.data.session_id}`,"processed_pdf",1)
+        await redisConnection.hincrby(`user:${job.data.session_id}`,"processed_pdf",1)
     } 
 },{
-    connection: {
-        host: "redis",
-        port: 6379
-    },
+    connection: redisConnection,
     concurrency: 1
 })
 
@@ -37,6 +42,3 @@ worker.on("failed", (job, err) => {
     console.error(`Job ${job?.id} failed`, err);
 });
 
-worker.on("error", (err) => {
-    console.error(err);
-});

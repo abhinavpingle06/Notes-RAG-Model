@@ -1,7 +1,11 @@
 {
   "scripts": {
-    "express": "node index.js",
-    "worker": "node worker.js"
+    "express": "node --env-file=.env index.js",
+    "worker": "node --env-file=.env worker.js",
+    "express:dev": "node --env-file=.env.local index.js",
+    "worker:dev": "node --env-file=.env.local worker.js",
+    "express:prod": "node --env-file=.env.prod index.js",
+    "worker:prod": "node --env-file=.env.prod worker.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",
