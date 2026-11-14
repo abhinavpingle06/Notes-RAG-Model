@@ -19,7 +19,7 @@ redisConnection.on('error', (err) => {
 
 const worker = new Worker("pdf-processing", async (job) => {
     console.log("job started",)
-    const response = await axios.post(`http://${process.env.AI_SERVICE_URL}/api/upload?session_id=${job.data.session_id}`,{
+    const response = await axios.post(`${process.env.AI_SERVICE_URL}/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
         question: job.data.question,

@@ -137,7 +137,8 @@ app.post("/express/upload",
             await Promise.all(
                 files.map( async (file) => {
                     // Key for storing path in s3
-                    const key = `upload/${session_id}/${Date.now()}-${file.originalname}`
+                    const date = Date.now()
+                    const key = `upload/${session_id}/${date}-${file.originalname}`
                     await s3.send(new PutObjectCommand({
                         Bucket: process.env.S3_BUCKET_NAME,
                         Key: key,
