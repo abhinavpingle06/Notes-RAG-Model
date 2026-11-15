@@ -2,7 +2,7 @@ const {Worker} = require("bullmq")
 const axios = require('axios')
 const Redis = require("ioredis");
 const path = require('path')
-require('dotenv').config({path:path.resolve(__dirname,"./.env.local")})
+require('dotenv').config({path:path.resolve(__dirname,"./.env")})
 
 const redisConnection = new Redis(process.env.REDIS_URL, {
     maxRetriesPerRequest: null,
@@ -22,7 +22,7 @@ const worker = new Worker("pdf-processing", async (job) => {
     const response = await axios.post(`${process.env.AI_SERVICE_URL}/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
-        enable_advance_text_detection : job.enable_advance_text_detection,
+        enable_advance_text_detection : job.data.enable_advance_text_detection,
         question: job.data.question,
         files_data: job.data.files_data,
     })  

@@ -16,6 +16,11 @@ resource "aws_ecs_service" "backend_service" {
     container_name   = "express_backend"
     container_port   = 3000
   }
+
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+  }
 }
 
 resource "aws_ecs_service" "worker_service" {

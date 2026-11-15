@@ -1,14 +1,15 @@
 {
   "scripts": {
-    "express": "node --env-file=.env index.js",
-    "worker": "node --env-file=.env worker.js",
-    "express:dev": "node --env-file=.env.local index.js",
-    "worker:dev": "node --env-file=.env.local worker.js",
-    "express:prod": "node --env-file=.env.prod index.js",
-    "worker:prod": "node --env-file=.env.prod worker.js"
+    "express": "node --env-file=.env run_express.js",
+    "worker": "node --env-file=.env run_worker.js",
+    "express:dev": "node --env-file=.env.local run_express.js",
+    "worker:dev": "node --env-file=.env.local run_worker.js",
+    "express:prod": "node --env-file=.env.prod run_express.js",
+    "worker:prod": "node --env-file=.env.prod run_worker.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",
+    "@infisical/sdk": "^5.3.1",
     "axios": "^1.18.1",
     "bullmq": "^5.79.2",
     "cors": "^2.8.6",

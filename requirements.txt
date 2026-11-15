@@ -14,3 +14,4 @@ boto3==1.43.36
 python-multipart
 redis>=5.0,<7.0
 docling
+infisicalsdk
