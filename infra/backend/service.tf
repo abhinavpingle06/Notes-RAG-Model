@@ -17,9 +17,8 @@ resource "aws_ecs_service" "backend_service" {
     container_port   = 3000
   }
 
-  service_connect_configuration {
-    enabled   = true
-    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+  service_registries {
+    registry_arn = aws_service_discovery_service.express.arn
   }
 }
 
@@ -32,14 +31,9 @@ resource "aws_ecs_service" "worker_service" {
   launch_type   = "FARGATE"
 
   network_configuration {
-    subnets          = var.backend_subnet
+    subnets          = var.worker_subnet
     security_groups  = [aws_security_group.rag_worker.id]
     assign_public_ip = false
-  }
-
-  service_connect_configuration {
-    enabled   = true
-    namespace = aws_service_discovery_http_namespace.rag_internal.arn
   }
 }
 
@@ -52,23 +46,31 @@ resource "aws_ecs_service" "ai_service" {
   launch_type   = "FARGATE"
 
   network_configuration {
-    subnets          = var.backend_subnet
+    subnets          = var.ai_subnet
     security_groups  = [aws_security_group.rag_ai.id]
     assign_public_ip = false
   }
 
-  service_connect_configuration {
-    enabled   = true
-    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+  service_registries {
+    registry_arn = aws_service_discovery_service.ai.arn
+  }
+}
 
-    service {
-      port_name      = "ai-http"
-      discovery_name = "ai-service"
+resource "aws_ecs_service" "redis_service" {
+  name            = "rag_redis_service"
+  cluster         = aws_ecs_cluster.rag_project.id
+  task_definition = aws_ecs_task_definition.redis_task.arn
 
-      client_alias {
-        dns_name = "ai-service"
-        port     = 8000
-      }
-    }
+  desired_count = 1
+  launch_type   = "FARGATE"
+
+  network_configuration {
+    subnets          = var.redis_subnet
+    security_groups  = [aws_security_group.redis.id]
+    assign_public_ip = false
+  }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.redis.arn
   }
 }

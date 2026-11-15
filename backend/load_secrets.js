@@ -8,7 +8,7 @@ async function loadSecrets() {
 
     // Authenticate using Machine Identity
     await client.auth().awsIamAuth.login({
-        identityId: process.env.AWS_ARN_ID
+        identityId: process.env.INFISICAL_IDENTITY_ID
     })
 
     // Fetch production secrets

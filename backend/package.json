@@ -4,8 +4,8 @@
     "worker": "node --env-file=.env run_worker.js",
     "express:dev": "node --env-file=.env.local run_express.js",
     "worker:dev": "node --env-file=.env.local run_worker.js",
-    "express:prod": "node --env-file=.env.prod run_express.js",
-    "worker:prod": "node --env-file=.env.prod run_worker.js"
+    "express:prod": "node run_express.js",
+    "worker:prod": "node run_worker.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",

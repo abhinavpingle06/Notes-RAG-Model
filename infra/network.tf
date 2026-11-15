@@ -28,6 +28,7 @@ resource "aws_subnet" "rag_vpc_alb_public_subnet_2" {
   }
 }
 
+# EXPRESS
 resource "aws_subnet" "rag_vpc_backend_private_subnet" {
   vpc_id            = aws_vpc.rag_backend_vpc.id
   cidr_block        = "10.0.11.0/24"
@@ -45,6 +46,70 @@ resource "aws_subnet" "rag_vpc_backend_private_subnet_2" {
 
   tags = {
     Name = "rag-private-backend-subnet-2"
+    Type = "Private"
+  }
+}
+
+# WORKER
+resource "aws_subnet" "rag_vpc_worker_private_subnet" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.21.0/24"
+  availability_zone = "ap-south-1a"
+
+  tags = {
+    Name = "rag-private-worker-subnet-1"
+    Type = "Private"
+  }
+}
+resource "aws_subnet" "rag_vpc_worker_private_subnet_2" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.22.0/24"
+  availability_zone = "ap-south-1b"
+
+  tags = {
+    Name = "rag-private-worker-subnet-2"
+    Type = "Private"
+  }
+}
+
+resource "aws_subnet" "rag_vpc_ai_private_subnet" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.31.0/24"
+  availability_zone = "ap-south-1a"
+
+  tags = {
+    Name = "rag-private-ai-subnet-1"
+    Type = "Private"
+  }
+}
+resource "aws_subnet" "rag_vpc_ai_private_subnet_2" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.32.0/24"
+  availability_zone = "ap-south-1b"
+
+  tags = {
+    Name = "rag-private-ai-subnet-2"
+    Type = "Private"
+  }
+}
+
+resource "aws_subnet" "rag_vpc_redis_private_subnet" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.41.0/24"
+  availability_zone = "ap-south-1a"
+
+  tags = {
+    Name = "rag-private-redis-subnet-1"
+    Type = "Private"
+  }
+}
+resource "aws_subnet" "rag_vpc_redis_private_subnet_2" {
+  vpc_id            = aws_vpc.rag_backend_vpc.id
+  cidr_block        = "10.0.42.0/24"
+  availability_zone = "ap-south-1b"
+
+  tags = {
+    Name = "rag-private-redis-subnet-2"
     Type = "Private"
   }
 }
@@ -93,6 +158,30 @@ resource "aws_route_table_association" "private_assoc_1" {
 }
 resource "aws_route_table_association" "private_assoc_2" {
   subnet_id      = aws_subnet.rag_vpc_backend_private_subnet_2.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "worker_private_assoc_1" {
+  subnet_id      = aws_subnet.rag_vpc_worker_private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "worker_private_assoc_2" {
+  subnet_id      = aws_subnet.rag_vpc_worker_private_subnet_2.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "ai_private_assoc_1" {
+  subnet_id      = aws_subnet.rag_vpc_ai_private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "ai_private_assoc_2" {
+  subnet_id      = aws_subnet.rag_vpc_ai_private_subnet_2.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "redis_private_assoc_1" {
+  subnet_id      = aws_subnet.rag_vpc_redis_private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+resource "aws_route_table_association" "redis_private_assoc_2" {
+  subnet_id      = aws_subnet.rag_vpc_redis_private_subnet_2.id
   route_table_id = aws_route_table.private_rt.id
 }
 

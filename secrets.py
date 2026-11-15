@@ -10,7 +10,7 @@ def load_secrets():
 
     # Authenticate using ECS Task Role (AWS IAM)
     client.auth.aws_auth.login(
-        identity_id=os.environ["AWS_ARN_ID"]
+        identity_id=os.environ["INFISICAL_IDENTITY_ID"]
     )
 
     # Fetch secrets from Infisical

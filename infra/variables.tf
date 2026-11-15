@@ -56,3 +56,15 @@ variable "GITHUB_TOKEN" {
   type      = string
   sensitive = true
 }
+
+variable "task_role_arn" {
+  type = string
+}
+
+variable "infisical_machine_id" {
+  type = string
+}
+
+variable "infisical_project_id" {
+  type = string
+}

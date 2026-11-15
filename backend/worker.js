@@ -2,7 +2,6 @@ const {Worker} = require("bullmq")
 const axios = require('axios')
 const Redis = require("ioredis");
 const path = require('path')
-require('dotenv').config({path:path.resolve(__dirname,"./.env")})
 
 const redisConnection = new Redis(process.env.REDIS_URL, {
     maxRetriesPerRequest: null,

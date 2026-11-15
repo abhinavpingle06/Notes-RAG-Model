@@ -6,6 +6,18 @@ variable "backend_subnet" {
   type = list(string)
 }
 
+variable "worker_subnet" {
+  type = list(string)
+}
+
+variable "ai_subnet" {
+  type = list(string)
+}
+
+variable "redis_subnet" {
+  type = list(string)
+}
+
 variable "nginx_sg" {
   type = string
 }
@@ -30,3 +42,14 @@ variable "private_route_table_ids" {
   type = list(string)
 }
 
+variable "task_role_arn" {
+  type = string
+}
+
+variable "infisical_machine_id" {
+  type = string
+}
+
+variable "infisical_project_id" {
+  type = string
+}

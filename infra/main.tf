@@ -54,9 +54,15 @@ module "Backend" {
   aws_registry            = aws_ecr_repository.rag_registry.repository_url
   vpc_id                  = aws_vpc.rag_backend_vpc.id
   backend_subnet          = [aws_subnet.rag_vpc_backend_private_subnet.id, aws_subnet.rag_vpc_backend_private_subnet_2.id]
+  worker_subnet           = [aws_subnet.rag_vpc_worker_private_subnet.id, aws_subnet.rag_vpc_worker_private_subnet_2.id]
+  ai_subnet               = [aws_subnet.rag_vpc_ai_private_subnet.id, aws_subnet.rag_vpc_ai_private_subnet_2.id]
+  redis_subnet            = [aws_subnet.rag_vpc_redis_private_subnet.id, aws_subnet.rag_vpc_redis_private_subnet_2.id]
   alb_sg                  = aws_security_group.alb_sg.id
   nginx_sg                = aws_security_group.nginx_sg.id
   nginx_target_grp        = aws_lb_target_group.nginx.arn
   express_backend_tg      = aws_lb_target_group.express_backend.arn
   private_route_table_ids = [aws_route_table.private_rt.id]
+  task_role_arn           = var.task_role_arn
+  infisical_machine_id    = var.infisical_machine_id
+  infisical_project_id    = var.infisical_project_id
 }

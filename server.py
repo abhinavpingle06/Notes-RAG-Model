@@ -15,7 +15,7 @@ def start_server():
         # Import FastAPI application only after loading secrets
         from main import app
 
-        port = int(os.getenv("PORT", 8000))
+        port = 8000
 
         print("Starting FastAPI application...")
 
