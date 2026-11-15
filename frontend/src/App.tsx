@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { AlertCircle, X, ChevronDown, ChevronUp, FileText, ArrowRight, FaceSlightlySmilingIcon } from 'lucide-react'
+import { AlertCircle, X, ChevronDown, ChevronUp, FileText, ArrowRight, FaceSlightlySmilingIcon, HelpCircle } from 'lucide-react'
 import { Header } from './components/Header'
 import { DocumentUpload } from './components/DocumentUpload'
 import { ChatMessageItem } from './components/ChatMessageItem'
@@ -26,6 +26,7 @@ function App() {
   const [error, setError] = useState('')
   const [uid, setUid] = useState<string>('')
   const [isDocsCollapsed, setIsDocsCollapsed] = useState(false)
+  const [advanceTextDetection, setAdvanceTextDetection] = useState<boolean>(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -53,6 +54,7 @@ function App() {
     setError('')
     setStage('idle')
     setIsDocsCollapsed(false)
+    setAdvanceTextDetection(false)
   }
 
   // For sequential Polling 
@@ -139,6 +141,7 @@ function App() {
       notesFiles.forEach((file) => formData.append('notes_pdfs', file))
       syllabusFiles.forEach((file) => formData.append('syllabus_pdf', file))
       formData.append('session_id', uid)
+      formData.append('enable_advance_text_detection', String(advanceTextDetection))
 
       const response = await express_api.post(`/express/upload`, formData )
       const data = response.data
@@ -327,10 +330,42 @@ function App() {
           <section className="initial-query-section">
             <form className="query-card" onSubmit={handleSubmit}>
               <div className="query-header">
-                <label htmlFor="initial-question" className="query-label">
-                  Ask your first question
-                </label>
-                <span className="query-sub">Grounds the index and generates your first answer</span>
+                <div className="query-header-titles">
+                  <label htmlFor="initial-question" className="query-label">
+                    Ask your first question
+                  </label>
+                  <span className="query-sub">Grounds the index and generates your first answer</span>
+                </div>
+
+                <div className={`advance-toggle-container ${advanceTextDetection ? 'active' : ''}`}>
+                  <label htmlFor="advance-text-switch" className="advance-toggle-label">
+                    Advance text detection
+                  </label>
+                  <div className="tooltip-trigger-wrapper">
+                    <button
+                      type="button"
+                      className="info-tooltip-btn"
+                      aria-label="Information about advance text detection"
+                    >
+                      <HelpCircle size={15} />
+                    </button>
+                    <div className="tooltip-bubble" role="tooltip">
+                      Enables OCR, Layout Analysis, and Chart Extraction.
+                      Processing might take longer. <br />
+                      Disable for faster results.
+                    </div>
+                  </div>
+                  <label className="toggle-switch" htmlFor="advance-text-switch" title="Toggle advance text detection">
+                    <input
+                      id="advance-text-switch"
+                      type="checkbox"
+                      checked={advanceTextDetection}
+                      onChange={(e) => setAdvanceTextDetection(e.target.checked)}
+                      disabled={loading}
+                    />
+                    <span className="toggle-slider" />
+                  </label>
+                </div>
               </div>
 
               <div className="query-input-box">

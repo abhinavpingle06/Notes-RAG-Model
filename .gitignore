@@ -66,7 +66,9 @@ terraform.rc
 tfplan
 plan.out
 .env
-.env.*
+.env.local
+.env.prod
+.env.terraform
 *.pem
 *.key
 *.p12

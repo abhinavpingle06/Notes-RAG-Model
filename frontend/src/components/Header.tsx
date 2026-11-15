@@ -1,5 +1,5 @@
 import React from 'react'
-import { Sparkles, RotateCcw, FileText, CheckCircle2, Space, AppleIcon, NotebookDotIcon, DownloadCloudIcon, NotebookPen, NotepadTextDashedIcon, NotepadText, NotebookTabs, EighthNotesIcon, BotMessageSquare } from 'lucide-react'
+import { RotateCcw, FileText, CheckCircle2, BotMessageSquare } from 'lucide-react'
 
 interface HeaderProps {
   onReset: () => void
