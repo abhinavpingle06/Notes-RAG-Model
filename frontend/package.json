@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ilovepdf/ilovepdf-nodejs": "^0.3.1",
     "axios": "^1.21.1",
     "lucide-react": "^1.70.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^10.1.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "uuid": "^14.0.1"
   },
   "devDependencies": {

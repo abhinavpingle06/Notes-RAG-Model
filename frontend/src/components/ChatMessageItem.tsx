@@ -3,6 +3,8 @@ import ReactMarkdown from 'react-markdown'
 import { User, Bot, Copy, Check, AlertCircle } from 'lucide-react'
 import type { ChatMessage } from '../types/chat'
 import { formatTime } from '../utils/formatters'
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
 interface ChatMessageItemProps {
   message: ChatMessage
@@ -76,7 +78,21 @@ export const ChatMessageItem: React.FC<ChatMessageItemProps> = ({ message }) => 
           </div>
 
           <div className="markdown-content">
-            <ReactMarkdown>{message.answer}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkBreaks]}
+              components={{
+                table: ({ children }) => (
+                  <div className="table-wrapper">
+                    <table>{children}</table>
+                  </div>
+                ),
+                code: ({ children, className }) => (
+                  <code className={className}>{children}</code>
+                ),
+              }}
+            >
+              {message.answer}
+            </ReactMarkdown>
           </div>
         </div>
       </div>

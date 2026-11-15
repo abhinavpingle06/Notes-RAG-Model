@@ -1129,7 +1129,7 @@ body {
   right: 0;
   z-index: 50;
   margin-top: auto;
-  padding: 16px 0 max(16px, env(safe-area-inset-bottom, 16px));
+  padding: 46px 0 max(16px, env(safe-area-inset-bottom, 16px));
   background: linear-gradient(180deg, transparent 0%, rgba(8, 9, 15, 0.85) 25%, #08090f 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
