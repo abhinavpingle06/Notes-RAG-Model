@@ -5,7 +5,6 @@ from pydantic import BaseModel
 import json
 import traceback
 from langchain.agents import create_agent
-from fastapi.middleware.cors import CORSMiddleware
 from langchain_groq import ChatGroq
 import logging
 import time
@@ -16,16 +15,18 @@ import os
 import os
 import logging
 from dotenv import load_dotenv
+from docling.document_converter import DocumentConverter
+
+BASE_DIR = Path(__file__).resolve().parent
+ENV_PATH = BASE_DIR / ".env"
+load_dotenv(ENV_PATH)
 
 from app.rag.vectorstore import VectorStore
-
-load_dotenv()
-
+from app.utils.pdf_to_markdown import create_pdf_converter, pdf_to_markdown
 from app.rag.engine import RAGEngine
-from app.core.config import DATA_DIR, PDF_PATH
 from app.core.redis import redis_server
 from app.rag.embeddings import EmbeddingModel
-from app.core.config import EMBEDDING_MODEL_NAME, LLM_MODEL_NAME, REDIS_URL
+from app.core.config import EMBEDDING_MODEL_NAME, LLM_MODEL_NAME, REDIS_URL, AGENT_PROMPT, RAG_PROMPT_TEMPLATE, MACHINE
 
 os.makedirs("logs", exist_ok=True)
 
@@ -65,11 +66,17 @@ async def lifespan(app: FastAPI):
 
     app.state.agent = create_agent(
     model= llm,
-    system_prompt="You are a helpful assistant",
+    system_prompt=AGENT_PROMPT,
     )
 
     store = VectorStore(embeddings=embedding_model)
     app.state.store = store
+
+    # Initialize PDF converter
+    if MACHINE == "local" :
+        app.state.pdf_converter = create_pdf_converter()
+    else :
+        app.state.pdf_converter = DocumentConverter()
 
     print("Startup complete")
 
@@ -79,7 +86,6 @@ async def lifespan(app: FastAPI):
 
 # INITIALIZE 
 app = FastAPI(lifespan=lifespan)
-
 
 s3 = boto3.client(
     "s3",
@@ -98,14 +104,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
@@ -122,7 +120,7 @@ async def log_requests(request: Request, call_next):
 
     return response
 
-@app.get("/")
+@app.get("/health")
 def root():
     return {"Status":200}
 
@@ -181,16 +179,39 @@ async def api_answer(request: Request,
         )
 
         logger.info(f"Successfully Downloaded file ${file.filename} from S3") 
+
+        logger.info("Starting PDF conversion to MARKDOWN...")
+
+        if MACHINE == "local":
+            markdown_text = pdf_to_markdown(app.state.pdf_converter, str(local_path))
+        else:
+            result = app.state.pdf_converter.convert(str(local_path))  
+            markdown_text = result.document.export_to_markdown()
+
+        logger.info(
+            "Markdown conversion completed. Characters: %s",
+            len(markdown_text)
+        )
+
+        if not markdown_text.strip():
+            raise ValueError("iLovePDF returned empty Markdown")
+
+
         rag_engine = RAGEngine(
         file=local_path,
+        document_text=markdown_text,
         session_id=data.session_id,
         embedding_model=request.app.state.embedding_model,
         vector_store=request.app.state.store,
         agent=request.app.state.agent,
         )
+
+        logger.info(
+            "Document successfully processed for session %s",
+            data.session_id
+        )
   
         return {"msg":"success"}
-        # UNLESS WE ARE NOT STORING THE PDFS WE ARE NOT CALLING THIS FUNC
         
     except Exception as e:
         logger.exception("Error while processing request")
@@ -225,40 +246,11 @@ async def api_chats(request: Request, data:chatData ):
         else:
             contextObj = []
         
-        prompt_template=f"""
-            You are a helpfile assistant. Use only the information provided in the context below to answer the question.
-        If the answer is not present in the context, respond with "I don't know"
-        If the answer is not
-
-        Write a comprehensive answer suitable for a 10-mark exam question. 
-        Include definition, working principle, advantages, disadvantages, applications, and a conclusion with headings and sub-headings and points/markdown. 
-        Use around 600-1000 words. Dont mention the number of words in answer.
-
-    Instructions:
-
-    * Answer the user's question using ONLY the information available in the document context.
-    * If the context does not contain enough information, reply: **"I couldn't find that information in the uploaded document."**
-    * Use the previous conversation only to understand follow-up questions and maintain context.
-    * Do not invent or assume facts that are not present in the document.
-    * Answer naturally and conversationally.
-    * Use Markdown formatting where appropriate (headings, bullet points, tables, code blocks).
-    * Keep responses concise unless the user explicitly asks for a detailed explanation.
-
-    ### Previous Conversation
-
-    {contextObj}
-
-    ### Document Context
-
-    {combined_text}
-
-    ### User Question
-
-    {data.question}
-
-    ### Response
-    answer:
-            """
+        prompt_template = RAG_PROMPT_TEMPLATE.format(
+            previous_conversation=contextObj,
+            document_context=combined_text,
+            question=data.question
+        )
 
         result= request.app.state.agent.invoke({
             "messages":[

@@ -1,9 +1,6 @@
 from pypdf import PdfReader
 from pathlib import Path
 
-# TESTING PURPOSE
-from app.core.config import PDF_PATH
-
 class PDFLoader:
     """
     This class is used to load the pdf file

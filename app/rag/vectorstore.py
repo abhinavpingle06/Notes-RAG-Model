@@ -1,6 +1,13 @@
 
 import logging
 import time
+from dotenv import load_dotenv
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+ENV_PATH = BASE_DIR / ".env"
+
+load_dotenv(dotenv_path=ENV_PATH)
 
 from qdrant_client import QdrantClient, models
 from langchain_qdrant import QdrantVectorStore
@@ -9,7 +16,8 @@ from app.core.config import (
     QDRANT_URL,
     QDRANT_COLLECTION,
     TOP_K,
-    VECTOR_TTL
+    VECTOR_TTL,
+    QDRANT_API_KEY,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,7 +30,8 @@ class VectorStore:
         self.embeddings = embeddings
 
         self.client = QdrantClient(
-            url=QDRANT_URL
+            url=QDRANT_URL,
+            api_key=QDRANT_API_KEY
         )
 
         # Get embedding dimensions

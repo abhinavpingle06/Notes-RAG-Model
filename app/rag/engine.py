@@ -1,4 +1,4 @@
-from app.core.config import PDF_PATH, CHUNK_SIZE, CHUNK_OVERLAP, EMBEDDING_MODEL_NAME, TOP_K
+from app.core.config import CHUNK_SIZE, CHUNK_OVERLAP, EMBEDDING_MODEL_NAME, TOP_K
 from app.rag.loader import PDFLoader
 from app.rag.chunker import LangchainTextChunker
 from app.rag.embeddings import EmbeddingModel
@@ -18,8 +18,9 @@ class RAGEngine:
     Initialized once and serves all queries
     """
 
-    def __init__(self, file, session_id, embedding_model, vector_store, agent):
+    def __init__(self, file, document_text, session_id, embedding_model, vector_store, agent):
         self.file = file
+        self.document_text = document_text
         self.session_id = session_id
         self.embedding_model = embedding_model
         self.store = vector_store
@@ -29,22 +30,34 @@ class RAGEngine:
     def _initialize(self):
         load_dotenv()
         logger.info("Initializing RAG Engine for session %s", self.session_id)
-        # 1.Get text string 
-        logger.info("Loading PDF and extracting the text...")
-        text=PDFLoader(self.file).load_pdf()
-        logger.info("Loading PDF and extraction completed")
+
+        # 1. Extract or receive document text
+        if self.document_text is not None:
+            logger.info("Using pre-converted Markdown text")
+            text = self.document_text
+        elif self.file is not None:
+            logger.info("Loading PDF and extracting text...")
+            text = PDFLoader(self.file).load_pdf()
+        else:
+            raise ValueError(
+                "Either file or document_text must be provided"
+            )
+        if not text or not text.strip():
+            raise ValueError("Document contains no extractable text")
+        logger.info("Document extraction completed")
+
         # 2.Divides in chunks
         logger.info("Splitting in chunks...")
         chunks=LangchainTextChunker(CHUNK_SIZE, CHUNK_OVERLAP).chunk(text=text)
         logger.info("Splitting in chunks completed")
 
-        logger.info("Innitializing Vector Store with embedding model...")
-        # self.vector_store=VectorStore(embeddings=self.embedding_model,session_id=self.session_id, redis_config=self.redis_config)
-        logger.info("Innitializing Vector Store with embedding model completed")
-
-        logger.info("Generating Embedddings...")
-        self.store.add(self.session_id, chunks)
-        logger.info("Generating Embedddings Finished")
+        # 3.Store embeddings in Qdrant
+        logger.info("Generating embeddings...")
+        self.store.add(
+            self.session_id,
+            chunks
+        )
+        logger.info("Embeddings stored successfully")
 
         return {
             "msg":"success"
