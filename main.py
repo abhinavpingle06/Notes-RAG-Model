@@ -46,6 +46,7 @@ class PDFrequest(BaseModel):
     job_id:str
     question: str
     session_id: str
+    enable_advance_text_detection: str
     files_data: FILES
 
 class chatData(BaseModel):
@@ -73,10 +74,9 @@ async def lifespan(app: FastAPI):
     app.state.store = store
 
     # Initialize PDF converter
-    if MACHINE == "local" :
-        app.state.pdf_converter = create_pdf_converter()
-    else :
-        app.state.pdf_converter = DocumentConverter()
+    app.state.pdf_converter_cpu = create_pdf_converter()
+    if MACHINE == "gpu" :
+        app.state.pdf_converter_gpu = DocumentConverter()
 
     print("Startup complete")
 
@@ -182,9 +182,9 @@ async def api_answer(request: Request,
 
         logger.info("Starting PDF conversion to MARKDOWN...")
 
-        if MACHINE == "local":
+        if MACHINE == "local" or data.enable_advance_text_detection == "false":
             markdown_text = pdf_to_markdown(app.state.pdf_converter, str(local_path))
-        else:
+        elif MACHINE == "gpu" and data.enable_advance_text_detection == "true" :
             result = app.state.pdf_converter.convert(str(local_path))  
             markdown_text = result.document.export_to_markdown()
 

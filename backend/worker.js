@@ -22,6 +22,7 @@ const worker = new Worker("pdf-processing", async (job) => {
     const response = await axios.post(`${process.env.AI_SERVICE_URL}/api/upload?session_id=${job.data.session_id}`,{
         job_id: job.id,
         session_id: job.data.session_id,
+        enable_advance_text_detection : job.enable_advance_text_detection,
         question: job.data.question,
         files_data: job.data.files_data,
     })  

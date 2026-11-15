@@ -96,7 +96,7 @@ app.post("/express/upload",
     ]), // Middleware
     async (req, res) => {  // Route handeling
         try {
-            const { question, session_id } = req.body;
+            const { question, session_id, enable_advance_text_detection } = req.body;
 
             const notesFiles = (req.files?.notes_pdfs || []).map(file => ({
                 ...file,
@@ -148,6 +148,7 @@ app.post("/express/upload",
                     await jobQueue.add("pdf-processing", {
                         session_id: session_id, //To track redis session
                         question: question,
+                        enable_advance_text_detection: enable_advance_text_detection,
                         files_data: {
                             "filename": file.originalname, // To track redis session files
                             "s3key": key // To download the file
