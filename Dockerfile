@@ -13,6 +13,8 @@ RUN pip install --no-cache-dir \
     torch \
  && pip install --no-cache-dir -r requirements.txt
 COPY main.py .
+COPY server.py .
+COPY secrets.py .
 COPY /app ./app
 EXPOSE 8000
 

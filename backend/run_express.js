@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 async function startServer() {
     try {
         if (process.env.MACHINE === "gpu") {
-            const { default: loadSecrets } = await import("./load-secrets.js");
+            const { default: loadSecrets } = await import("./load_secrets.js");
             await loadSecrets();
         } else {
             dotenv.config();

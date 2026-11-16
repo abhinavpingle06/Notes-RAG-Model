@@ -1,15 +1,14 @@
 import { InfisicalSDK } from "@infisical/sdk";
-require('dotenv').config({path:path.resolve(__dirname,"./.env")})
 
-async function loadSecrets() {
+export default async function loadSecrets() {
     const client = new InfisicalSDK({
         siteUrl: "https://app.infisical.com",
     });
 
-    // Authenticate using Machine Identity
+    // Authenticate using AWS IAM Machine Identity
     await client.auth().awsIamAuth.login({
         identityId: process.env.INFISICAL_IDENTITY_ID
-    })
+    });
 
     // Fetch production secrets
     const response = await client.secrets().listSecrets({
@@ -19,13 +18,10 @@ async function loadSecrets() {
         viewSecretValue: true,
     });
 
-    // Inject secrets
+    // Inject secrets into process.env
     for (const secret of response.secrets) {
         process.env[secret.secretKey] = secret.secretValue;
     }
 
     console.log("Secrets loaded successfully");
 }
-
-// export default loadSecrets;
-loadSecrets()
