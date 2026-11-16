@@ -1,5 +1,5 @@
 
-name: Backend - Build and Push Services to ECR
+name: AI - Build and Push AI service to ECR
 
 on:
   push:
