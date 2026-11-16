@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir \
  && pip install --no-cache-dir -r requirements.txt
 COPY main.py .
 COPY server.py .
-COPY secrets.py .
+COPY env_secrets.py .
 COPY /app ./app
 EXPOSE 8000
 

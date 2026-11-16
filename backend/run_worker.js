@@ -1,17 +1,17 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 async function startWorker() {
     try {
         if (process.env.MACHINE === "gpu") {
-            const { default: loadSecrets } = await import("./load_secrets.js");
+            const loadSecrets = require("./load_secrets");
             await loadSecrets();
         } else {
-            // Local deployment
             dotenv.config();
         }
 
-        // Initialize worker only after secrets are loaded
-        await import("./worker.js");
+        require("./worker");
+
+        console.log("Worker initialized successfully");
 
     } catch (error) {
         console.error("Worker startup failed:", error);

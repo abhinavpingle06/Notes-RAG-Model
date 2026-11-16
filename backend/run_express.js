@@ -1,19 +1,19 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 async function startServer() {
     try {
         if (process.env.MACHINE === "gpu") {
-            const { default: loadSecrets } = await import("./load_secrets.js");
+            const loadSecrets = require("./load_secrets");
             await loadSecrets();
         } else {
             dotenv.config();
         }
 
-        const { default: app } = await import("./index.js");
+        const app = require("./index");
 
         const PORT = process.env.PORT || 3000;
 
-        app.listen(PORT, () => {
+        app.listen(PORT, "0.0.0.0", () => {
             console.log(`Server running on port ${PORT}`);
         });
 

@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "scripts": {
     "express": "node --env-file=.env run_express.js",
     "worker": "node --env-file=.env run_worker.js",

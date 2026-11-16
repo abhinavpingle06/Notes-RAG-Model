@@ -1,13 +1,11 @@
-
 import os
 import uvicorn
 from dotenv import load_dotenv
 
-
 def start_server():
     try:
         if os.getenv("MACHINE") == "gpu":
-            from secrets import load_secrets
+            from env_secrets import load_secrets
             load_secrets()
         else:
             load_dotenv()
