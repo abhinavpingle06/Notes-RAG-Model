@@ -8,11 +8,11 @@ const path = require('path')
 const Redis = require('ioredis')
 const scanFile = require('./utils/malware_scanner');
 
-if(process.env.NODE_ENV !== "production" ){
-    require('dotenv').config({
-        path: path.resolve(__dirname, './.env')
-    });
-}
+// if(process.env.NODE_ENV !== "production" ){
+//     require('dotenv').config({
+//         path: path.resolve(__dirname, './.env')
+//     });
+// }
 
 // Initalize configurations
 const PORT = Number(process.env.PORT) || 3000;
@@ -33,6 +33,8 @@ const redisConnection = new Redis(REDIS_URL, {
         return Math.min(times * 500, 5000);
     }
 });
+
+redisConnection.on('connect',() => console.log("REDIS CONNECTED"))
 
 redisConnection.on('error', (error) => {
     console.error('Redis connection error:', error.message);
