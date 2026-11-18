@@ -15,6 +15,7 @@ resource "aws_ecs_task_definition" "express_task" {
 
       portMappings = [
         {
+          name = "express"
           containerPort = 3000
           hostPort      = 3000
           protocol      = "tcp"
@@ -36,6 +37,17 @@ resource "aws_ecs_task_definition" "express_task" {
           value = var.infisical_project_id
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ai_backend_logs.name
+          "awslogs-region"        = "ap-south-1"
+          "awslogs-stream-prefix" = "express"
+          
+        }
+      }
 
       command = ["npm", "run", "express:prod"]
     }
@@ -73,8 +85,23 @@ resource "aws_ecs_task_definition" "worker_task" {
         {
           name  = "INFISICAL_PROJECT_ID"
           value = var.infisical_project_id
+        },
+        {
+          name = "REDIS_URL"
+          value = "redis://redis:6379"
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ai_backend_logs.name
+          "awslogs-region"        = "ap-south-1"
+          "awslogs-stream-prefix" = "worker"
+          
+        }
+      }
 
       command = ["npm", "run", "worker:prod"]
     }
@@ -90,8 +117,8 @@ resource "aws_ecs_task_definition" "ai_task" {
   family                   = "ai_task"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 2048
-  memory                   = 4096
+  cpu                      = 1024
+  memory                   = 2048
   execution_role_arn       = aws_iam_role.ecs_execution.arn
   task_role_arn = var.task_role_arn
 
@@ -103,7 +130,7 @@ resource "aws_ecs_task_definition" "ai_task" {
 
       portMappings = [
         {
-          name = "ai-http"
+          name = "ai"
           containerPort = 8000
           hostPort      = 8000
           protocol      = "tcp"
@@ -124,6 +151,16 @@ resource "aws_ecs_task_definition" "ai_task" {
           value = var.infisical_project_id
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ai_backend_logs.name
+          "awslogs-region"        = "ap-south-1"
+          "awslogs-stream-prefix" = "ai"       
+        }
+      }
 
       command = ["python", "server.py"]
     }
@@ -149,7 +186,7 @@ resource "aws_ecs_task_definition" "redis_task" {
   container_definitions = jsonencode([
     {
       name      = "redis"
-      image     = "redis:7-alpine"
+      image     = "redis:8.10.3-alpine"
       essential = true
 
       portMappings = [
@@ -158,15 +195,40 @@ resource "aws_ecs_task_definition" "redis_task" {
           containerPort = 6379
           hostPort      = 6379
           protocol      = "tcp"
-          appProtocol   = "http"
         }
       ]
 
+      logConfiguration = {
+        logDriver = "awslogs"
+
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ai_backend_logs.name
+          "awslogs-region"        = "ap-south-1"
+          "awslogs-stream-prefix" = "redis"
+          
+        }
+      }
+
       command = [
         "redis-server",
+        "--bind", "0.0.0.0",
+        "--protected-mode", "no",
+        "--port", "6379",
         "--appendonly", "yes",
         "--save", "60", "1"
       ]
+
+      healthCheck = {
+        command = [
+          "CMD",
+          "redis-cli",
+          "ping"
+        ]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
     }
   ])
 

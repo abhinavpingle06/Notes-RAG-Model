@@ -39,3 +39,25 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
 #     }]
 #   })
 # }
+
+# resource "aws_iam_role_policy" "ecs_exec_policy" {
+#   name = "rag-ecs-exec-policy"
+#   role = aws_iam_role.rag_task_role.id
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+
+#     Statement = [{
+#       Effect = "Allow"
+
+#       Action = [
+#         "ssmmessages:CreateControlChannel",
+#         "ssmmessages:CreateDataChannel",
+#         "ssmmessages:OpenControlChannel",
+#         "ssmmessages:OpenDataChannel"
+#       ]
+
+#       Resource = "*"
+#     }]
+#   })
+# }

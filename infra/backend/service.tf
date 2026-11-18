@@ -2,8 +2,10 @@ resource "aws_ecs_service" "backend_service" {
   name            = "rag_express_service"
   cluster         = aws_ecs_cluster.rag_project.id
   task_definition = aws_ecs_task_definition.express_task.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
+
+  enable_execute_command = true
 
   network_configuration {
     subnets          = var.backend_subnet
@@ -17,9 +19,24 @@ resource "aws_ecs_service" "backend_service" {
     container_port   = 3000
   }
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.express.arn
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+
+    service {
+      port_name      = "express"
+      discovery_name = "express"
+
+      client_alias {
+        dns_name = "express"
+        port     = 3000
+      }
+    }
   }
+
+  depends_on = [
+    aws_service_discovery_http_namespace.rag_internal
+  ]
 }
 
 resource "aws_ecs_service" "worker_service" {
@@ -30,11 +47,22 @@ resource "aws_ecs_service" "worker_service" {
   desired_count = 1
   launch_type   = "FARGATE"
 
+  enable_execute_command = true
+
   network_configuration {
     subnets          = var.worker_subnet
     security_groups  = [aws_security_group.rag_worker.id]
     assign_public_ip = false
   }
+
+  service_connect_configuration {
+  enabled   = true
+  namespace = aws_service_discovery_http_namespace.rag_internal.arn
+  }
+
+  depends_on = [
+    aws_service_discovery_http_namespace.rag_internal
+  ]
 }
 
 resource "aws_ecs_service" "ai_service" {
@@ -51,9 +79,24 @@ resource "aws_ecs_service" "ai_service" {
     assign_public_ip = false
   }
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.ai.arn
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+
+    service {
+      port_name      = "ai"
+      discovery_name = "ai"
+
+      client_alias {
+        dns_name = "ai"
+        port     = 8000
+      }
+    }
   }
+
+  depends_on = [
+    aws_service_discovery_http_namespace.rag_internal
+  ]
 }
 
 resource "aws_ecs_service" "redis_service" {
@@ -70,7 +113,22 @@ resource "aws_ecs_service" "redis_service" {
     assign_public_ip = false
   }
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.redis.arn
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.rag_internal.arn
+
+    service {
+      port_name      = "redis"
+      discovery_name = "redis"
+
+      client_alias {
+        dns_name = "redis"
+        port     = 6379
+      }
+    }
   }
+
+  depends_on = [
+    aws_service_discovery_http_namespace.rag_internal
+  ]
 }
