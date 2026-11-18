@@ -183,9 +183,9 @@ async def api_answer(request: Request,
         logger.info("Starting PDF conversion to MARKDOWN...")
 
         if MACHINE == "local" or data.enable_advance_text_detection == "false":
-            markdown_text = pdf_to_markdown(app.state.pdf_converter, str(local_path))
+            markdown_text = pdf_to_markdown(app.state.pdf_converter_cpu, str(local_path))
         elif MACHINE == "gpu" and data.enable_advance_text_detection == "true" :
-            result = app.state.pdf_converter.convert(str(local_path))  
+            result = app.state.pdf_converter_gpu.convert(str(local_path))  
             markdown_text = result.document.export_to_markdown()
 
         logger.info(
