@@ -37,7 +37,7 @@ jobs:
       - name: Build
         working-directory: frontend
         env:
-          VITE_EXPRESS_URL: "https://rag-api.naamjaap.app:3000/"
+          VITE_EXPRESS_URL: "https://rag-api.naamjaap.app/"
           VITE_ENV: production
         run: npm run build
 
