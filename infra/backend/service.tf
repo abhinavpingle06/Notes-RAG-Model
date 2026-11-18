@@ -35,7 +35,9 @@ resource "aws_ecs_service" "backend_service" {
   }
 
   depends_on = [
-    aws_service_discovery_http_namespace.rag_internal
+    aws_service_discovery_http_namespace.rag_internal,
+    aws_ecs_service.ai_service,
+    aws_ecs_service.redis_service,
   ]
 }
 
@@ -61,7 +63,10 @@ resource "aws_ecs_service" "worker_service" {
   }
 
   depends_on = [
-    aws_service_discovery_http_namespace.rag_internal
+  aws_service_discovery_http_namespace.rag_internal,
+  aws_ecs_service.ai_service,
+  aws_ecs_service.redis_service,
+  aws_ecs_service.backend_service
   ]
 }
 
@@ -95,7 +100,8 @@ resource "aws_ecs_service" "ai_service" {
   }
 
   depends_on = [
-    aws_service_discovery_http_namespace.rag_internal
+    aws_service_discovery_http_namespace.rag_internal,
+    aws_ecs_service.redis_service
   ]
 }
 

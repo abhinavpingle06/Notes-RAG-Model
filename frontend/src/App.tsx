@@ -74,8 +74,8 @@ function App() {
 
         setStage('answering');
 
-        const chatsRes = await express_api.post('/api/chat', {
-          session_id: sessionId,
+        const chatsRes = await express_api.post(`/api/chat`, {
+          session_id: uid,
           question: currentQ,
         });
 
