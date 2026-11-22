@@ -42,14 +42,16 @@ export const ChatMessageItem: React.FC<ChatMessageItemProps> = ({ message }) => 
 
       {/* Assistant Answer */}
       <div className="message-wrapper assistant-wrapper">
-        <div className={`message-avatar assistant-avatar ${message.isError ? 'error-avatar' : ''}`} title="NotesAssist AI">
+        <div className={`message-avatar assistant-avatar ${message.isError ? 'error-avatar' : ''}`} title={message.isError ? 'Error Alert' : 'NotesAssist AI'}>
           {message.isError ? <AlertCircle size={16} /> : <Bot size={16} />}
         </div>
         <div className={`message-box assistant-box ${message.isError ? 'error-box' : ''}`}>
           <div className="message-meta assistant-meta">
             <div className="assistant-badge-group">
-              <span className="sender-name">NotesAssist AI</span>
-              <span className="model-chip">RAG Grounded</span>
+              <span className="sender-name">{message.isError ? 'System Notice' : 'NotesAssist AI'}</span>
+              <span className={`model-chip ${message.isError ? 'error-chip' : ''}`}>
+                {message.isError ? 'Error' : 'RAG Grounded'}
+              </span>
             </div>
             <div className="message-actions">
               {message.createdAt && <span className="message-time">{formatTime(message.createdAt)}</span>}

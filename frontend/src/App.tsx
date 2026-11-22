@@ -8,6 +8,7 @@ import { ChatInput } from './components/ChatInput'
 import { LoadingIndicator } from './components/LoadingIndicator'
 import type { ChatMessage, ProcessingStage } from './types/chat'
 import { express_api } from './axios'
+import { getErrorMessage } from './utils/error'
 
 const SUGGESTION_PROMPTS = [
   'Summarize the core syllabus units',
@@ -63,32 +64,45 @@ function App() {
     const pollingInterval = 2000;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-
       // Wait 2 seconds before the next poll
       await new Promise(resolve => setTimeout(resolve, pollingInterval));
 
-      const pollRes = await express_api.get(`/express/result/${sessionId}`);
+      let pollRes;
+      try {
+        pollRes = await express_api.get(`/express/result/${sessionId}`);
+      } catch (pollErr) {
+        // If server connection failed on the final attempts, throw error
+        if (attempt >= maxAttempts - 1) {
+          throw new Error(getErrorMessage(pollErr, 'Document processing polling failed. Backend is not responding.'));
+        }
+        continue;
+      }
+
       const pollData = pollRes.data;
 
       if (pollData.status === 'success') {
-
         setStage('answering');
 
-        const chatsRes = await express_api.post(`/api/chat`, {
-          session_id: uid,
-          question: currentQ,
-        });
+        let chatsRes;
+        try {
+          chatsRes = await express_api.post(`/api/chat`, {
+            session_id: sessionId,
+            question: currentQ,
+          });
+        } catch (chatErr) {
+          throw new Error(getErrorMessage(chatErr, 'Documents processed, but AI service failed to respond or generate an answer.'));
+        }
 
         const chatData = chatsRes.data;
 
-        if (chatData.error) {
-          throw new Error(chatData.error);
+        if (chatData.error || !chatData.answer) {
+          throw new Error(chatData.error || 'AI service did not return an answer. Please try asking again.');
         }
 
         const newMessage: ChatMessage = {
           id: uuidv4(),
           question: currentQ,
-          answer: chatData.answer ?? 'No answer generated.',
+          answer: chatData.answer,
           createdAt: new Date().toISOString(),
         };
 
@@ -102,12 +116,12 @@ function App() {
 
       if (pollData.status === 'failed') {
         throw new Error(
-          pollData.error || 'Document processing failed.'
+          pollData.error || 'Document processing failed on the backend worker.'
         );
       }
     }
 
-    throw new Error('Document processing timed out. Please try again.');
+    throw new Error('Document processing timed out after 2 minutes. The backend worker may be unavailable or busy.');
   };
 
   // Initial Document Upload + First Question Submit
@@ -143,14 +157,45 @@ function App() {
       formData.append('session_id', uid)
       formData.append('enable_advance_text_detection', String(advanceTextDetection))
 
-      const response = await express_api.post(`/express/upload`, formData )
+      let response;
+      try {
+        response = await express_api.post(`/express/upload`, formData)
+      } catch (uploadErr) {
+        const errMsg = getErrorMessage(uploadErr, 'Could not reach the server for document upload. Please verify the backend is running.');
+        setError(errMsg);
+        const errorMsg: ChatMessage = {
+          id: uuidv4(),
+          question: currentQ,
+          answer: `⚠️ **Upload Failed**: ${errMsg}`,
+          createdAt: new Date().toISOString(),
+          isError: true,
+        };
+        setMessages(prev => [...prev, errorMsg]);
+        setChat(true);
+        setQuestion('');
+        setLoading(false);
+        setStage('idle');
+        return;
+      }
+
       const data = response.data
 
       if (data.error) {
-        setError(data.error || 'Failed to upload documents to server.')
-        setLoading(false)
-        setStage('idle')
-        return
+        const errMsg = data.error || 'Failed to upload documents to server.';
+        setError(errMsg);
+        const errorMsg: ChatMessage = {
+          id: uuidv4(),
+          question: currentQ,
+          answer: `⚠️ **Upload Error**: ${errMsg}`,
+          createdAt: new Date().toISOString(),
+          isError: true,
+        };
+        setMessages(prev => [...prev, errorMsg]);
+        setChat(true);
+        setQuestion('');
+        setLoading(false);
+        setStage('idle');
+        return;
       }
 
       // Upload successful -> Transition to background processing & vectorizing
@@ -159,23 +204,39 @@ function App() {
       // Calling polling
       try {
         await pollForResult(uid, currentQ);
-
       } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : 'Document processing failed.'
-        );
-
+        const errMsg = getErrorMessage(error, 'Document processing failed.');
+        setError(errMsg);
+        const errorMsg: ChatMessage = {
+          id: uuidv4(),
+          question: currentQ,
+          answer: `⚠️ **Processing Error**: ${errMsg}`,
+          createdAt: new Date().toISOString(),
+          isError: true,
+        };
+        setMessages(prev => [...prev, errorMsg]);
+        setChat(true);
+        setQuestion('');
       } finally {
         setLoading(false);
         setStage('idle');
       }
 
-    } catch {
-      setError('Could not reach the server. Please verify the backend services are running.')
-      setLoading(false)
-      setStage('idle')
+    } catch (outerErr) {
+      const errMsg = getErrorMessage(outerErr, 'Could not reach the server. Please verify backend services are running.');
+      setError(errMsg);
+      const errorMsg: ChatMessage = {
+        id: uuidv4(),
+        question: currentQ,
+        answer: `⚠️ **System Error**: ${errMsg}`,
+        createdAt: new Date().toISOString(),
+        isError: true,
+      };
+      setMessages(prev => [...prev, errorMsg]);
+      setChat(true);
+      setQuestion('');
+      setLoading(false);
+      setStage('idle');
     }
   }
 
@@ -198,11 +259,13 @@ function App() {
       })
       const data = response.data
 
-      if (data.error) {
+      if (data.error || !data.answer) {
+        const errMsg = data.error || 'The backend was unable to provide an answer.';
+        setError(errMsg);
         const errorMsg: ChatMessage = {
           id: uuidv4(),
           question: currentQ,
-          answer: data.error || 'Failed to retrieve answer from assistant.',
+          answer: `⚠️ **Assistant Error**: ${errMsg}`,
           createdAt: new Date().toISOString(),
           isError: true,
         }
@@ -213,13 +276,22 @@ function App() {
       const newMessage: ChatMessage = {
         id: uuidv4(),
         question: currentQ,
-        answer: data.answer ?? '',
+        answer: data.answer,
         createdAt: new Date().toISOString(),
       }
 
       setMessages((prev) => [...prev, newMessage])
-    } catch {
-      setError('Could not reach the chat backend. Please try again.')
+    } catch (err) {
+      const errMsg = getErrorMessage(err, 'Could not reach the chat backend. Please try again.');
+      setError(errMsg);
+      const errorMsg: ChatMessage = {
+        id: uuidv4(),
+        question: currentQ,
+        answer: `⚠️ **Connection Error**: ${errMsg}`,
+        createdAt: new Date().toISOString(),
+        isError: true,
+      }
+      setMessages((prev) => [...prev, errorMsg])
     } finally {
       setLoading(false)
       setStage('idle')
