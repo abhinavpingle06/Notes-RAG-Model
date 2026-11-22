@@ -34,6 +34,16 @@ resource "aws_ecs_service" "backend_service" {
     }
   }
 
+  deployment_configuration {
+    strategy = "ROLLING"
+    bake_time_in_minutes = 2
+  }
+
+  deployment_circuit_breaker {
+    enable = true
+    rollback = true
+  }
+
   depends_on = [
     aws_service_discovery_http_namespace.rag_internal,
     aws_ecs_service.ai_service,
@@ -60,6 +70,16 @@ resource "aws_ecs_service" "worker_service" {
   service_connect_configuration {
   enabled   = true
   namespace = aws_service_discovery_http_namespace.rag_internal.arn
+  }
+
+  deployment_configuration {
+    strategy = "ROLLING"
+    bake_time_in_minutes = 2
+  }
+
+  deployment_circuit_breaker {
+    enable = true
+    rollback = true
   }
 
   depends_on = [
@@ -99,6 +119,16 @@ resource "aws_ecs_service" "ai_service" {
     }
   }
 
+  deployment_configuration {
+    strategy = "ROLLING"
+    bake_time_in_minutes = 2
+  }
+
+  deployment_circuit_breaker {
+    enable = true
+    rollback = true
+  }
+
   depends_on = [
     aws_service_discovery_http_namespace.rag_internal,
     aws_ecs_service.redis_service
@@ -132,6 +162,16 @@ resource "aws_ecs_service" "redis_service" {
         port     = 6379
       }
     }
+  }
+
+  deployment_configuration {
+    strategy = "ROLLING"
+    bake_time_in_minutes = 2
+  }
+
+  deployment_circuit_breaker {
+    enable = true
+    rollback = true
   }
 
   depends_on = [
