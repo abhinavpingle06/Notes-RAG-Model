@@ -3,7 +3,7 @@
 A Full-Stack **Retrieval-Augmented Generation (RAG)** application that allows users to upload PDF notes, process them into embeddings, and ask natural language questions to receive context-aware answers powered by Large Language Models (LLMs).
 
 <div align="center">
-  <img width="800" height="591" alt="1782977262403" src="https://github.com/user-attachments/assets/3ace95a6-1884-4ce2-9f0f-22aeecf9af31" />
+  <img width="1600" height="1161" alt="WhatsApp Image 2026-11-20 at 9 25 44 AM" src="https://github.com/user-attachments/assets/4cc04077-c2b2-4f32-8312-ff3d562f80c0" />
 </div>
 
 ---
