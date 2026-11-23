@@ -90,6 +90,7 @@ function App() {
           });
         } catch (chatErr) {
           setError(getErrorMessage(chatErr, 'Documents processed, but AI service failed to respond or generate an answer.'));
+          return;
         }
 
         const chatData = chatsRes.data;
