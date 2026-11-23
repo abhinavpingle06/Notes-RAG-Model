@@ -162,7 +162,7 @@ def query(request: Request, question:str= Form(...), pdfs: List[UploadFile] = Fi
         }
 
 @app.post("/api/upload")
-async def api_answer(request: Request,
+def api_answer(request: Request,
         # question:str =Form(...), notes: UploadFile = File(...), session_id: str = Form(...)):
         data: PDFrequest):
     """Return a JSON answer object for the frontend."""

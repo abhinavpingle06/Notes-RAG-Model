@@ -60,7 +60,7 @@ app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
-    console.log(`[EXPRESS] ${req.method} ${req.originalUrl}`);
+    console.log(`[EXPRESS] METHOD-${req.method} URL-${req.originalUrl} USER-${req.params}`);
     next();
 });
 
@@ -68,8 +68,8 @@ app.use((req, res, next) => {
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 20 * 1024 * 1024,
-        files: 4
+        fileSize: 5 * 1024 * 1024, // only 5mb rn allowed
+        files: 4 // 3+1
     },
     fileFilter(req, file, callback) {
         if (file.mimetype !== 'application/pdf') {
@@ -80,11 +80,14 @@ const upload = multer({
     }
 });
 
-// Routes
-app.get("/express", (req, res) => {
-    res.send("The server is running......");
+// Health check endpoint for AWS ALB
+app.get("/health", (req, res) => {
+    return res.status(200).json({
+        status: "healthy"
+    });
 });
 
+// Routes
 app.post("/express/upload",
     upload.fields([
         { name: "notes_pdfs", maxCount: 4 },
@@ -120,27 +123,39 @@ app.post("/express/upload",
             console.log("All PDFs scanned successfully");
 
             // For polling tracking...
-            await redisConnection
-                .multi()
-                .hset(`user:${session_id}`, {
-                    uploaded_pdf: files.length,
-                    processed_pdf: 0,
-                })
-                .expire(`user:${session_id}`, 7200)
-                .exec();
-
+            try {
+                await redisConnection
+                    .multi()
+                    .hset(`user:${session_id}`, {
+                        uploaded_pdf: files.length,
+                        processed_pdf: 0,
+                    })
+                    .expire(`user:${session_id}`, 7200)
+                    .exec();
+            } catch (error) {
+                console.log(`Failed to create user in redis for tracking. Error - ${error}`)
+            }
+            
             // Promise All
             await Promise.all(
                 files.map( async (file) => {
                     // Key for storing path in s3
                     const date = Date.now()
                     const key = `upload/${session_id}/${date}-${file.originalname}`
-                    await s3.send(new PutObjectCommand({
-                        Bucket: process.env.S3_BUCKET_NAME,
-                        Key: key,
-                        Body: file.buffer,
-                        ContentType: file.mimetype,
-                    })) 
+                    try {
+                        console.log(`Uploading the file onto S3 - ${key}`)
+                        await s3.send(new PutObjectCommand({
+                            Bucket: process.env.S3_BUCKET_NAME,
+                            Key: key,
+                            Body: file.buffer,
+                            ContentType: file.mimetype,
+                        })) 
+                    } catch (error) {
+                        console.log(`Failed uploadig the file onto S3. Error - ${error}`)
+                    }
+                    console.log(`Success Uploading the file onto S3 - ${key}`)
+
+                    console.log(`Adding info into the queue`)
                     await jobQueue.add("pdf-processing", {
                         session_id: session_id, //To track redis session
                         question: question,
@@ -153,6 +168,7 @@ app.post("/express/upload",
                 })
             )
 
+            console.log(`Express Completed the uploads for the user ${session_id} at ${Date.now()}`)
             return res.json({
                 message:"success",
                 session_id
@@ -162,10 +178,9 @@ app.post("/express/upload",
 
             return res.status(500).json({
                 status: "Error",
-                error: error.message
+                error: "File-Upload failed. Check the file format. Each file size must be below 5mb."
             });
-        }
-        
+        }     
 });
 
 // FOR POLLING 
@@ -183,14 +198,6 @@ app.get("/express/result/:session_id", async (req, res) => {
 
     return res.json({
         status: "pending"
-    });
-});
-
-
-// Health check endpoint for AWS ALB
-app.get("/health", (req, res) => {
-    return res.status(200).json({
-        status: "healthy"
     });
 });
 

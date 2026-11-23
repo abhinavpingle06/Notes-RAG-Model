@@ -60,20 +60,19 @@ function App() {
 
   // For sequential Polling 
   const pollForResult = async (sessionId: string, currentQ: string) => {
-    const maxAttempts = 60;
-    const pollingInterval = 2000;
+    const maxAttempts = 150; // 150 * 2000 / 60 = 5mins
+    const pollingInterval = 2000; // 2s
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      // Wait 2 seconds before the next poll
       await new Promise(resolve => setTimeout(resolve, pollingInterval));
-
       let pollRes;
       try {
         pollRes = await express_api.get(`/express/result/${sessionId}`);
       } catch (pollErr) {
         // If server connection failed on the final attempts, throw error
         if (attempt >= maxAttempts - 1) {
-          throw new Error(getErrorMessage(pollErr, 'Document processing polling failed. Backend is not responding.'));
+          setError(getErrorMessage(pollErr, 'Document processing polling failed. Backend is not responding.'));
+          return;
         }
         continue;
       }
@@ -90,13 +89,13 @@ function App() {
             question: currentQ,
           });
         } catch (chatErr) {
-          throw new Error(getErrorMessage(chatErr, 'Documents processed, but AI service failed to respond or generate an answer.'));
+          setError(getErrorMessage(chatErr, 'Documents processed, but AI service failed to respond or generate an answer.'));
         }
 
         const chatData = chatsRes.data;
 
         if (chatData.error || !chatData.answer) {
-          throw new Error(chatData.error || 'AI service did not return an answer. Please try asking again.');
+          throw setError(chatData.error || 'AI service did not return an answer. Please try asking again.');
         }
 
         const newMessage: ChatMessage = {
@@ -120,8 +119,7 @@ function App() {
         );
       }
     }
-
-    throw new Error('Document processing timed out after 2 minutes. The backend worker may be unavailable or busy.');
+   // setError('Document processing timed out after 5 minutes. The backend worker may be unavailable or busy.');
   };
 
   // Initial Document Upload + First Question Submit
