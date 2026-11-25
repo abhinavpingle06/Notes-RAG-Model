@@ -1,0 +1,266 @@
+[
+    {
+        "id": "009bca0b-67c7-4f81-b74c-fed44478c080",
+        "payload": {
+            "page_content": "The DBMS automatically retrieves it.\n\n## Why is it important?\n\n- Easy to use.\n- Users see a single database.\n\n## 5. Query Processing\n\n## Definition\n\nQuery Processing means executing SQL queries efficiently when data is stored at different locations.\n\n## Explanation\n\nIf a query needs data from multiple sites, the DBMS decides:\n\n- Which server should process the query?\n- How should data be transferred?\n- Which execution plan is fastest?\n\n## Example\n\nEmployee Table → Pune Department Table → Delhi Query SELECT * FROM Employee E JOIN Department D ON E.DeptID = D.DeptID;\n\nThe DBMS collects the required data from both locations and returns the result.\n\n## Why is it important?\n\n- Faster query execution.\n- Reduced network traffic.\n- Lower execution cost.",
+            "metadata": {
+                "chunk_id": "20",
+                "source_file": "mod3.pdf",
+                "actual_text": "The DBMS automatically retrieves it.\n\n## Why is it important?\n\n- Easy to use.\n- Users see a single database.\n\n## 5. Query Processing\n\n## Definition\n\nQuery Processing means executing SQL queries efficiently when data is stored at different locations.\n\n## Explanation\n\nIf a query needs data from multiple sites, the DBMS decides:\n\n- Which server should process the query?\n- How should data be transferred?\n- Which execution plan is fastest?\n\n## Example\n\nEmployee Table → Pune Department Table → Delhi Query SELECT * FROM Employee E JOIN Department D ON E.DeptID = D.DeptID;\n\nThe DBMS collects the required data from both locations and returns the result.\n\n## Why is it important?\n\n- Faster query execution.\n- Reduced network traffic.\n- Lower execution cost."
+            }
+        }
+    },
+    {
+        "id": "10285bc6-013c-4d0e-b069-4cab46e79a99",
+        "payload": {
+            "page_content": "Rows are divided among sites.\n\n## Employee Table\n\n| EmpID Name City  101 Amit Mumbai  102 Ravi Pune  103 Kiran Delhi   |\n|--------------------------------------------------------------------|\n\n## Fragment 1 (Mumbai)\n\n| EmpID Name City  101 Amit Mumbai   |\n|------------------------------------|\n\n## Fragment 2 (Pune)\n\n| EmpID Name City  102 Ravi Pune   |\n|----------------------------------|\n\n## Fragment 3 (Delhi)\n\n| EmpID Name City  103 Kiran Delhi   |\n|------------------------------------|\n\n## Horizontal Fragmentation Rule\n\nSELECT * FROM Employee WHERE City='Mumbai';\n\n## Advantages\n\n- Local processing\n- Reduced network traffic\n\n## 2. Vertical Fragmentation\n\nColumns are divided among sites.\n\n## Employee Table",
+            "metadata": {
+                "chunk_id": "23",
+                "source_file": "mod3.pdf",
+                "actual_text": "Rows are divided among sites.\n\n## Employee Table\n\n| EmpID Name City  101 Amit Mumbai  102 Ravi Pune  103 Kiran Delhi   |\n|--------------------------------------------------------------------|\n\n## Fragment 1 (Mumbai)\n\n| EmpID Name City  101 Amit Mumbai   |\n|------------------------------------|\n\n## Fragment 2 (Pune)\n\n| EmpID Name City  102 Ravi Pune   |\n|----------------------------------|\n\n## Fragment 3 (Delhi)\n\n| EmpID Name City  103 Kiran Delhi   |\n|------------------------------------|\n\n## Horizontal Fragmentation Rule\n\nSELECT * FROM Employee WHERE City='Mumbai';\n\n## Advantages\n\n- Local processing\n- Reduced network traffic\n\n## 2. Vertical Fragmentation\n\nColumns are divided among sites.\n\n## Employee Table"
+            }
+        }
+    },
+    {
+        "id": "185f7588-b831-40b3-b5be-6155d06be8de",
+        "payload": {
+            "page_content": "## Disadvantages\n\n- Complex query processing\n- Difficult data integration\n- Higher maintenance cost\n- Performance overhead\n\n## Types of Distributed Databases\n\nDistributed databases can be classified based on the uniformity of DBMS.\n\n## 1. Homogeneous Distributed Database\n\nAll sites use the same DBMS software.\n\n## Example\n\nAll branches use MySQL.\n\nMumbai → MySQL\n\nDelhi → MySQL\n\nPune → MySQL\n\n## Advantages\n\n- Easy management\n- Better compatibility\n- Simple query processing\n\n## Disadvantages\n\n- Less flexibility\n\n## 2. Heterogeneous Distributed Database\n\nDifferent sites use different DBMS software.\n\n## Example\n\nMumbai → Oracle\n\nDelhi → SQL Server\n\nPune → MySQL\n\n## Advantages\n\n- Flexibility\n- Existing systems can be retained\n\n## Disadvantages",
+            "metadata": {
+                "chunk_id": "13",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Disadvantages\n\n- Complex query processing\n- Difficult data integration\n- Higher maintenance cost\n- Performance overhead\n\n## Types of Distributed Databases\n\nDistributed databases can be classified based on the uniformity of DBMS.\n\n## 1. Homogeneous Distributed Database\n\nAll sites use the same DBMS software.\n\n## Example\n\nAll branches use MySQL.\n\nMumbai → MySQL\n\nDelhi → MySQL\n\nPune → MySQL\n\n## Advantages\n\n- Easy management\n- Better compatibility\n- Simple query processing\n\n## Disadvantages\n\n- Less flexibility\n\n## 2. Heterogeneous Distributed Database\n\nDifferent sites use different DBMS software.\n\n## Example\n\nMumbai → Oracle\n\nDelhi → SQL Server\n\nPune → MySQL\n\n## Advantages\n\n- Flexibility\n- Existing systems can be retained\n\n## Disadvantages"
+            }
+        }
+    },
+    {
+        "id": "21bf5731-ace7-4710-be87-71d854598747",
+        "payload": {
+            "page_content": "This is distributed data processing.\n\n## Advantages\n\n- Faster processing\n- Improved reliability\n- Better resource utilization\n- Scalability\n- Reduced communication cost\n\n## Disadvantages\n\n- Complex design\n- Security concerns\n- Network dependency\n- Higher maintenance cost\n\n## Distributed Database System (DDBS)\n\n## Definition\n\nA Distributed Database System (DDBS) is a collection of logically related databases distributed across multiple locations and connected through a communication network.\n\nTo users, the distributed database appears as a single database.\n\n## Formal Definition\n\nA distributed database is a database whose portions are stored at different physical locations but are logically interconnected.\n\n## Example\n\nNetwork\n\n|",
+            "metadata": {
+                "chunk_id": "1",
+                "source_file": "mod3.pdf",
+                "actual_text": "This is distributed data processing.\n\n## Advantages\n\n- Faster processing\n- Improved reliability\n- Better resource utilization\n- Scalability\n- Reduced communication cost\n\n## Disadvantages\n\n- Complex design\n- Security concerns\n- Network dependency\n- Higher maintenance cost\n\n## Distributed Database System (DDBS)\n\n## Definition\n\nA Distributed Database System (DDBS) is a collection of logically related databases distributed across multiple locations and connected through a communication network.\n\nTo users, the distributed database appears as a single database.\n\n## Formal Definition\n\nA distributed database is a database whose portions are stored at different physical locations but are logically interconnected.\n\n## Example\n\nNetwork\n\n|"
+            }
+        }
+    },
+    {
+        "id": "2722a582-4816-41cd-b813-26f648c6f0c9",
+        "payload": {
+            "page_content": "## Disadvantages\n\n- Server can become a bottleneck if many clients access it simultaneously.\n- Failure of the server can affect all connected clients (single point of failure).\n\n## 2. Peer-to-Peer (P2P) Architecture\n\n## Definition\n\nIn Peer-to-Peer Architecture, every site acts as both a client and a server. There is no central server. Each site can request data from other sites and also provide its own data.\n\n## Structure\n\n- Site A -------- Site B\n\n●\n\n|\n\n|\n\n●\n\n|\n\n|\n\nSite C -------- Site D\n\n## Working\n\n1. Any site can request data from another site.\n2. The receiving site processes the request.\n3. The requested data is returned directly.\n4. All sites communicate with each other without a central server.\n\n## Example",
+            "metadata": {
+                "chunk_id": "10",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Disadvantages\n\n- Server can become a bottleneck if many clients access it simultaneously.\n- Failure of the server can affect all connected clients (single point of failure).\n\n## 2. Peer-to-Peer (P2P) Architecture\n\n## Definition\n\nIn Peer-to-Peer Architecture, every site acts as both a client and a server. There is no central server. Each site can request data from other sites and also provide its own data.\n\n## Structure\n\n- Site A -------- Site B\n\n●\n\n|\n\n|\n\n●\n\n|\n\n|\n\nSite C -------- Site D\n\n## Working\n\n1. Any site can request data from another site.\n2. The receiving site processes the request.\n3. The requested data is returned directly.\n4. All sites communicate with each other without a central server.\n\n## Example"
+            }
+        }
+    },
+    {
+        "id": "27c678dd-585c-4809-8659-47f950ac54e7",
+        "payload": {
+            "page_content": "## Example\n\nNetwork\n\n|\n\n-----------------------------\n\n|\n\n|\n\n|\n\nMumbai DB Delhi DB Pune DB\n\n|\n\n|\n\n|\n\nEmployee Customer Sales Records Records Records\n\nUsers can access data from any location without knowing where the data is physically stored.\n\n## 1. Data Sharing\n\n## Definition\n\nData stored at different locations can be shared and accessed by multiple users or branches at the same time.\n\n## Explanation\n\nInstead of keeping separate copies of data at every branch, users can access the required data from the distributed database. This improves collaboration and avoids duplicate data.\n\n## Example\n\nA bank has branches in Mumbai, Pune, and Nagpur.",
+            "metadata": {
+                "chunk_id": "2",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Example\n\nNetwork\n\n|\n\n-----------------------------\n\n|\n\n|\n\n|\n\nMumbai DB Delhi DB Pune DB\n\n|\n\n|\n\n|\n\nEmployee Customer Sales Records Records Records\n\nUsers can access data from any location without knowing where the data is physically stored.\n\n## 1. Data Sharing\n\n## Definition\n\nData stored at different locations can be shared and accessed by multiple users or branches at the same time.\n\n## Explanation\n\nInstead of keeping separate copies of data at every branch, users can access the required data from the distributed database. This improves collaboration and avoids duplicate data.\n\n## Example\n\nA bank has branches in Mumbai, Pune, and Nagpur."
+            }
+        }
+    },
+    {
+        "id": "32b9185d-45cd-4a7d-88d0-58b160d994d4",
+        "payload": {
+            "page_content": "## Example\n\nA company has offices in Mumbai, Delhi, Pune, and Chennai. Each office stores its own employee records but can directly access records from the other offices when needed.\n\n## Advantages\n\n- High reliability\n- No single point of failure\n- Better scalability\n- Workload is distributed among all sites\n\n## Disadvantages\n\n- Complex coordination among sites\n- Difficult to manage security\n- Data synchronization is more challenging\n\n## 3. Multi-Database Architecture\n\n## Definition\n\nA Multi-Database Architecture consists of multiple independent (autonomous) databases that cooperate to provide users with integrated access to data.\n\nEach database may use a different DBMS and is managed independently.\n\n## Structure\n\n- ●\n\nApplication\n\n●\n\n|",
+            "metadata": {
+                "chunk_id": "11",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Example\n\nA company has offices in Mumbai, Delhi, Pune, and Chennai. Each office stores its own employee records but can directly access records from the other offices when needed.\n\n## Advantages\n\n- High reliability\n- No single point of failure\n- Better scalability\n- Workload is distributed among all sites\n\n## Disadvantages\n\n- Complex coordination among sites\n- Difficult to manage security\n- Data synchronization is more challenging\n\n## 3. Multi-Database Architecture\n\n## Definition\n\nA Multi-Database Architecture consists of multiple independent (autonomous) databases that cooperate to provide users with integrated access to data.\n\nEach database may use a different DBMS and is managed independently.\n\n## Structure\n\n- ●\n\nApplication\n\n●\n\n|"
+            }
+        }
+    },
+    {
+        "id": "4e9da7d9-e36a-4526-ae22-bf6d812b1aab",
+        "payload": {
+            "page_content": "## Example\n\nA bank has branches in Mumbai, Pune, and Nagpur.\n\n- A customer opens an account in Mumbai.\n- Later, the customer visits the Pune branch.\n- The Pune branch can access the customer's account details even though they were created in Mumbai.\n\nThis is Data Sharing.\n\n## Key Point\n\nUsers at different locations can access the same data.\n\n## 2. Distribution Transparency\n\n## Definition\n\nUsers do not need to know where the data is physically stored. The database system automatically finds and retrieves it.\n\n## Explanation\n\nEven if data is stored on different servers, users write the same SQL query. The Distributed DBMS decides where to find the data.\n\n## Example\n\nA student searches for:\n\nSELECT * FROM Student;",
+            "metadata": {
+                "chunk_id": "3",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Example\n\nA bank has branches in Mumbai, Pune, and Nagpur.\n\n- A customer opens an account in Mumbai.\n- Later, the customer visits the Pune branch.\n- The Pune branch can access the customer's account details even though they were created in Mumbai.\n\nThis is Data Sharing.\n\n## Key Point\n\nUsers at different locations can access the same data.\n\n## 2. Distribution Transparency\n\n## Definition\n\nUsers do not need to know where the data is physically stored. The database system automatically finds and retrieves it.\n\n## Explanation\n\nEven if data is stored on different servers, users write the same SQL query. The Distributed DBMS decides where to find the data.\n\n## Example\n\nA student searches for:\n\nSELECT * FROM Student;"
+            }
+        }
+    },
+    {
+        "id": "5372ec6d-b7fd-4611-85a8-e442a514d5e1",
+        "payload": {
+            "page_content": "## Structure\n\n- ●\n\nApplication\n\n●\n\n|\n\n● -------------------------\n\n● |\n\n|\n\n|\n\nDatabase 1 Database 2 Database 3\n\n## Working\n\n1. Each database stores its own data independently.\n2. An application sends a query.\n3. The system collects data from the required databases.\n4. The combined result is presented to the user.\n\n## Example\n\n## A company uses:\n\n- Oracle Database for employee records\n- MySQL Database for customer information\n- PostgreSQL Database for sales data\n\nA report combines information from all three databases.\n\n## Advantages\n\n- Supports different DBMS software\n- Existing databases can be reused\n- High flexibility\n- Each database retains local autonomy\n\n## Disadvantages",
+            "metadata": {
+                "chunk_id": "12",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Structure\n\n- ●\n\nApplication\n\n●\n\n|\n\n● -------------------------\n\n● |\n\n|\n\n|\n\nDatabase 1 Database 2 Database 3\n\n## Working\n\n1. Each database stores its own data independently.\n2. An application sends a query.\n3. The system collects data from the required databases.\n4. The combined result is presented to the user.\n\n## Example\n\n## A company uses:\n\n- Oracle Database for employee records\n- MySQL Database for customer information\n- PostgreSQL Database for sales data\n\nA report combines information from all three databases.\n\n## Advantages\n\n- Supports different DBMS software\n- Existing databases can be reused\n- High flexibility\n- Each database retains local autonomy\n\n## Disadvantages"
+            }
+        }
+    },
+    {
+        "id": "57f83ca4-5818-4e45-8f91-e9fce06e9acc",
+        "payload": {
+            "page_content": "## 6. Security\n\n## Definition\n\nSecurity means protecting distributed data from unauthorized access and attacks.\n\n## Explanation\n\nSince data is stored across networks, it must be protected.\n\nThe DBMS provides:\n\n- User authentication\n- Password protection\n- Access control\n- Data encryption\n- Backup and recovery\n\n## Example\n\nOnly the HR department can access employee salary details.\n\nOther users cannot view or modify them.\n\n## Why is it important?\n\n- Prevents data theft.\n- Prevents unauthorized changes.\n- Protects confidential information.\n\n## 7. Reliability\n\n## Definition\n\nReliability means the distributed database should continue working even if one site fails.\n\n## Explanation\n\nIf one server stops working, other servers continue providing services.",
+            "metadata": {
+                "chunk_id": "21",
+                "source_file": "mod3.pdf",
+                "actual_text": "## 6. Security\n\n## Definition\n\nSecurity means protecting distributed data from unauthorized access and attacks.\n\n## Explanation\n\nSince data is stored across networks, it must be protected.\n\nThe DBMS provides:\n\n- User authentication\n- Password protection\n- Access control\n- Data encryption\n- Backup and recovery\n\n## Example\n\nOnly the HR department can access employee salary details.\n\nOther users cannot view or modify them.\n\n## Why is it important?\n\n- Prevents data theft.\n- Prevents unauthorized changes.\n- Protects confidential information.\n\n## 7. Reliability\n\n## Definition\n\nReliability means the distributed database should continue working even if one site fails.\n\n## Explanation\n\nIf one server stops working, other servers continue providing services."
+            }
+        }
+    },
+    {
+        "id": "6b8134d8-69da-46e6-824d-a148f5f3df70",
+        "payload": {
+            "page_content": "- Flexibility\n- Existing systems can be retained\n\n## Disadvantages\n\n- Complex integration\n- Data conversion issues\n\n## Comparison: Homogeneous vs Heterogeneous\n\n| Feature Homogeneous Heterogeneous  DBMS  Same  Different  Complexity Low  High  Integration Easy  Difficult  Maintenance Simple  Complex  Cost  Lower  Higher   |\n|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|\n\n## Design Issues in Distributed Databases\n\n## 1. Data Distribution\n\n## Definition\n\nData Distribution means deciding at which site or location the data should be stored.\n\n## Explanation",
+            "metadata": {
+                "chunk_id": "14",
+                "source_file": "mod3.pdf",
+                "actual_text": "- Flexibility\n- Existing systems can be retained\n\n## Disadvantages\n\n- Complex integration\n- Data conversion issues\n\n## Comparison: Homogeneous vs Heterogeneous\n\n| Feature Homogeneous Heterogeneous  DBMS  Same  Different  Complexity Low  High  Integration Easy  Difficult  Maintenance Simple  Complex  Cost  Lower  Higher   |\n|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|\n\n## Design Issues in Distributed Databases\n\n## 1. Data Distribution\n\n## Definition\n\nData Distribution means deciding at which site or location the data should be stored.\n\n## Explanation"
+            }
+        }
+    },
+    {
+        "id": "7282d32a-97f9-4b52-9a3e-567b6c1fe18f",
+        "payload": {
+            "page_content": "## Example\n\nCustomer Table\n\n- Original → Mumbai\n- Copy → Delhi\n- Copy → Pune\n\nIf Mumbai's server fails, Delhi or Pune can still provide the data.\n\n## Why is it important?\n\n- Faster access.\n- High availability.\n- Better reliability.\n\n## Disadvantage\n\nWhenever the original data changes, all copies must also be updated.\n\n## 4. Transparency\n\n## Definition\n\nTransparency means users do not need to know how or where the data is stored.\n\n## Explanation\n\nThe Distributed DBMS hides all the internal details from users.\n\nUsers do not know:\n\n- Where the data is stored.\n- How the data is divided.\n- Whether copies exist.\n\n## Example\n\nA user writes:\n\nSELECT * FROM Customer;\n\nThe user does not know whether the data comes from Mumbai, Delhi, or Pune.",
+            "metadata": {
+                "chunk_id": "19",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Example\n\nCustomer Table\n\n- Original → Mumbai\n- Copy → Delhi\n- Copy → Pune\n\nIf Mumbai's server fails, Delhi or Pune can still provide the data.\n\n## Why is it important?\n\n- Faster access.\n- High availability.\n- Better reliability.\n\n## Disadvantage\n\nWhenever the original data changes, all copies must also be updated.\n\n## 4. Transparency\n\n## Definition\n\nTransparency means users do not need to know how or where the data is stored.\n\n## Explanation\n\nThe Distributed DBMS hides all the internal details from users.\n\nUsers do not know:\n\n- Where the data is stored.\n- How the data is divided.\n- Whether copies exist.\n\n## Example\n\nA user writes:\n\nSELECT * FROM Customer;\n\nThe user does not know whether the data comes from Mumbai, Delhi, or Pune."
+            }
+        }
+    },
+    {
+        "id": "84ec2451-b0c9-4ad6-b6fa-ec6dc37baa5b",
+        "payload": {
+            "page_content": "There are three main architectures of Distributed Database Systems:\n\n1. Client-Server Architecture\n2. Peer-to-Peer Architecture\n3. Multi-Database Architecture\n\n## 1. Client-Server Architecture\n\n## Definition\n\nIn the Client-Server Architecture, one or more database servers store and manage the database, while clients send requests to access or modify the data.\n\nThe server processes the request and sends the result back to the client.\n\n## Structure\n\n- ●\n\nClient\n\n●\n\n|\n\n- -------------------\n\n●\n\n|\n\n|\n\nDatabase Server 1 Database Server 2\n\n## Working",
+            "metadata": {
+                "chunk_id": "8",
+                "source_file": "mod3.pdf",
+                "actual_text": "There are three main architectures of Distributed Database Systems:\n\n1. Client-Server Architecture\n2. Peer-to-Peer Architecture\n3. Multi-Database Architecture\n\n## 1. Client-Server Architecture\n\n## Definition\n\nIn the Client-Server Architecture, one or more database servers store and manage the database, while clients send requests to access or modify the data.\n\nThe server processes the request and sends the result back to the client.\n\n## Structure\n\n- ●\n\nClient\n\n●\n\n|\n\n- -------------------\n\n●\n\n|\n\n|\n\nDatabase Server 1 Database Server 2\n\n## Working"
+            }
+        }
+    },
+    {
+        "id": "9259a296-d4f5-4a2b-a35a-3f4e778ac14f",
+        "payload": {
+            "page_content": "●\n\n|\n\n|\n\nDatabase Server 1 Database Server 2\n\n## Working\n\n1. The client sends a database request (such as a SQL query).\n2. The database server receives the request.\n3. The server processes the query.\n4. The server retrieves or updates the required data.\n5. The server returns the result to the client.\n\n## Example\n\nA bank customer checks their account balance using a mobile banking app. The app (client) sends the request to the bank's database server, which retrieves the balance and sends it back.\n\n## Advantages\n\n- Centralized control of data\n- Better security\n- Easy maintenance and backup\n- Simple administration\n\n## Disadvantages",
+            "metadata": {
+                "chunk_id": "9",
+                "source_file": "mod3.pdf",
+                "actual_text": "●\n\n|\n\n|\n\nDatabase Server 1 Database Server 2\n\n## Working\n\n1. The client sends a database request (such as a SQL query).\n2. The database server receives the request.\n3. The server processes the query.\n4. The server retrieves or updates the required data.\n5. The server returns the result to the client.\n\n## Example\n\nA bank customer checks their account balance using a mobile banking app. The app (client) sends the request to the bank's database server, which retrieves the balance and sends it back.\n\n## Advantages\n\n- Centralized control of data\n- Better security\n- Easy maintenance and backup\n- Simple administration\n\n## Disadvantages"
+            }
+        }
+    },
+    {
+        "id": "9ef9e7ca-8e9b-484f-922c-4b9ad291d932",
+        "payload": {
+            "page_content": "For example, consider:\n\n## EMPLOYEE\n\n| EmpID  Dept  Location  1  HR  Pune  2  IT  Mumbai  3  IT  Pune  4  HR  Delhi  5  Finance  Mumbai   |\n|----------------------------------------------------------------------------------------------------|\n\nInstead of storing the complete table at one location, the DBMS can divide it into fragments and distribute them among different sites.\n\n## 2. Why is Fragmentation Required?\n\nThe main objective of fragmentation is to place data closer to the users/applications that frequently access it.\n\n## Objectives\n\n1. Improve query performance\n\nQueries can access only the required fragment instead of the entire table.\n\n2. Reduce communication cost\n\nLess data needs to travel between different network sites.",
+            "metadata": {
+                "chunk_id": "16",
+                "source_file": "mod3.pdf",
+                "actual_text": "For example, consider:\n\n## EMPLOYEE\n\n| EmpID  Dept  Location  1  HR  Pune  2  IT  Mumbai  3  IT  Pune  4  HR  Delhi  5  Finance  Mumbai   |\n|----------------------------------------------------------------------------------------------------|\n\nInstead of storing the complete table at one location, the DBMS can divide it into fragments and distribute them among different sites.\n\n## 2. Why is Fragmentation Required?\n\nThe main objective of fragmentation is to place data closer to the users/applications that frequently access it.\n\n## Objectives\n\n1. Improve query performance\n\nQueries can access only the required fragment instead of the entire table.\n\n2. Reduce communication cost\n\nLess data needs to travel between different network sites."
+            }
+        }
+    },
+    {
+        "id": "a0fcc2ff-4204-429a-b347-cc8b015a8998",
+        "payload": {
+            "page_content": "## Architecture of Distributed Database Systems (DDBS)\n\n## Definition\n\nThe Architecture of a Distributed Database System (DDBS) defines how data is stored, managed, and processed across multiple database sites connected through a communication network. It specifies how different computers (sites) communicate with each other and how users access distributed data as if it were a single database.\n\nA DDBS architecture aims to provide:\n\n- Efficient data storage\n- Fast query processing\n- Data sharing among sites\n- High reliability and availability\n- Transparency to users\n\n## Types of Distributed Database Architecture\n\nThere are three main architectures of Distributed Database Systems:",
+            "metadata": {
+                "chunk_id": "7",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Architecture of Distributed Database Systems (DDBS)\n\n## Definition\n\nThe Architecture of a Distributed Database System (DDBS) defines how data is stored, managed, and processed across multiple database sites connected through a communication network. It specifies how different computers (sites) communicate with each other and how users access distributed data as if it were a single database.\n\nA DDBS architecture aims to provide:\n\n- Efficient data storage\n- Fast query processing\n- Data sharing among sites\n- High reliability and availability\n- Transparency to users\n\n## Types of Distributed Database Architecture\n\nThere are three main architectures of Distributed Database Systems:"
+            }
+        }
+    },
+    {
+        "id": "a20507c0-990d-4a03-9ad9-5e51cb5fdea5",
+        "payload": {
+            "page_content": "If one server stops working, other servers continue providing services.\n\n## Example\n\nA bank has servers in:\n\n- Mumbai\n- Pune\n- Delhi\n\nIf the Mumbai server fails due to a power outage, customers can still access their accounts using the Pune or Delhi server.\n\n## Why is it important?\n\n- Continuous service.\n- Less downtime.\n- Better customer experience.\n\n## Data Fragmentation\n\n## Definition\n\nFragmentation is the process of dividing a database into smaller pieces called fragments. Fragments are stored at different sites.\n\n## Need for Fragmentation\n\n- Improved performance\n- Reduced communication cost\n- Better parallel processing\n- Localized access\n\n## Types of Fragmentation\n\n## 1. Horizontal Fragmentation\n\nRows are divided among sites.\n\n## Employee Table",
+            "metadata": {
+                "chunk_id": "22",
+                "source_file": "mod3.pdf",
+                "actual_text": "If one server stops working, other servers continue providing services.\n\n## Example\n\nA bank has servers in:\n\n- Mumbai\n- Pune\n- Delhi\n\nIf the Mumbai server fails due to a power outage, customers can still access their accounts using the Pune or Delhi server.\n\n## Why is it important?\n\n- Continuous service.\n- Less downtime.\n- Better customer experience.\n\n## Data Fragmentation\n\n## Definition\n\nFragmentation is the process of dividing a database into smaller pieces called fragments. Fragments are stored at different sites.\n\n## Need for Fragmentation\n\n- Improved performance\n- Reduced communication cost\n- Better parallel processing\n- Localized access\n\n## Types of Fragmentation\n\n## 1. Horizontal Fragmentation\n\nRows are divided among sites.\n\n## Employee Table"
+            }
+        }
+    },
+    {
+        "id": "b6dec40b-1bd4-4a9b-9fd5-4ca9ea472735",
+        "payload": {
+            "page_content": "Less data needs to travel between different network sites.\n\n3. Support parallel processing\n\nDifferent fragments can be processed simultaneously at different sites.\n\n4. Improve availability\n\nData can remain available even if one site becomes temporarily unavailable.\n\n5. Improve scalability\n\nData can be distributed as the database grows.\n\n6. Provide better data management\n\nData can be placed according to geographical location, department, workload, etc.\n\n## 3. Types of Fragmentation\n\nThere are three major types:\n\n1. Horizontal Fragmentation\n2. Vertical Fragmentation\n3. Mixed Fragmentation\n\n## 3.1 Horizontal Fragmentation\n\nIn horizontal fragmentation, a relation is divided based on its rows (tuples).\n\nEach fragment contains:",
+            "metadata": {
+                "chunk_id": "17",
+                "source_file": "mod3.pdf",
+                "actual_text": "Less data needs to travel between different network sites.\n\n3. Support parallel processing\n\nDifferent fragments can be processed simultaneously at different sites.\n\n4. Improve availability\n\nData can remain available even if one site becomes temporarily unavailable.\n\n5. Improve scalability\n\nData can be distributed as the database grows.\n\n6. Provide better data management\n\nData can be placed according to geographical location, department, workload, etc.\n\n## 3. Types of Fragmentation\n\nThere are three major types:\n\n1. Horizontal Fragmentation\n2. Vertical Fragmentation\n3. Mixed Fragmentation\n\n## 3.1 Horizontal Fragmentation\n\nIn horizontal fragmentation, a relation is divided based on its rows (tuples).\n\nEach fragment contains:"
+            }
+        }
+    },
+    {
+        "id": "bc007b91-27c8-452f-9205-0cd5840b1b20",
+        "payload": {
+            "page_content": "This is Reliability.\n\n## 5. Scalability\n\n## Definition\n\nThe distributed database can grow easily by adding new sites or servers without major changes to the system.\n\n## Explanation\n\nAs an organization expands, new branches or servers can be connected to the existing distributed database.\n\n## Example\n\nA company initially has branches in:\n\n- Mumbai\n- Pune\n\nLater, it opens new branches in:\n\n- Nagpur\n- Nashik\n\nThe new branches can simply be added to the distributed database without redesigning the entire system.\n\nThis is Scalability.\n\n## Architecture of Distributed Database Systems (DDBS)\n\n## Definition",
+            "metadata": {
+                "chunk_id": "6",
+                "source_file": "mod3.pdf",
+                "actual_text": "This is Reliability.\n\n## 5. Scalability\n\n## Definition\n\nThe distributed database can grow easily by adding new sites or servers without major changes to the system.\n\n## Explanation\n\nAs an organization expands, new branches or servers can be connected to the existing distributed database.\n\n## Example\n\nA company initially has branches in:\n\n- Mumbai\n- Pune\n\nLater, it opens new branches in:\n\n- Nagpur\n- Nashik\n\nThe new branches can simply be added to the distributed database without redesigning the entire system.\n\nThis is Scalability.\n\n## Architecture of Distributed Database Systems (DDBS)\n\n## Definition"
+            }
+        }
+    },
+    {
+        "id": "bf584d12-bcb1-48e0-9eef-15cb68fb4ab5",
+        "payload": {
+            "page_content": "## Example\n\nA student searches for:\n\nSELECT * FROM Student;\n\nThe student does not know whether the data is stored in Delhi, Mumbai, or Hyderabad. The DBMS automatically retrieves the required data.\n\nThis is Distribution Transparency.\n\n## 3. Local Autonomy\n\n## Definition\n\nEach site has the freedom to manage and control its own local database.\n\n## Explanation\n\nEvery branch can perform its own operations such as:\n\n- Insert records\n- Update records\n- Delete records\n- Backup data\n- Manage security\n\nwithout depending on other branches.\n\n## Example\n\nA university has campuses in:\n\n- Pune\n- Mumbai\n- Nashik\n\nThe Pune campus can update its student records without asking permission from the Mumbai campus.\n\nEach campus manages its own data independently.",
+            "metadata": {
+                "chunk_id": "4",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Example\n\nA student searches for:\n\nSELECT * FROM Student;\n\nThe student does not know whether the data is stored in Delhi, Mumbai, or Hyderabad. The DBMS automatically retrieves the required data.\n\nThis is Distribution Transparency.\n\n## 3. Local Autonomy\n\n## Definition\n\nEach site has the freedom to manage and control its own local database.\n\n## Explanation\n\nEvery branch can perform its own operations such as:\n\n- Insert records\n- Update records\n- Delete records\n- Backup data\n- Manage security\n\nwithout depending on other branches.\n\n## Example\n\nA university has campuses in:\n\n- Pune\n- Mumbai\n- Nashik\n\nThe Pune campus can update its student records without asking permission from the Mumbai campus.\n\nEach campus manages its own data independently."
+            }
+        }
+    },
+    {
+        "id": "c6266cba-a857-4ec7-b768-09594af586a5",
+        "payload": {
+            "page_content": "Each fragment contains:\n\n- Some rows of the original table\n- All columns of the original table\n\n## Example\n\nSuppose employees are divided according to their location.\n\nOriginal relation:\n\n## EMPLOYEE\n\nEmpID Dept Location\n\n1 HR Pune\n\n2 IT Mumbai\n\n3 IT Pune\n\n4 HR Delhi\n\n5 Finance Mumbai\n\nWe can create:\n\n## Fragment F1 - Pune Employees EmpID Dept Location\n\n1 HR Pune\n\n3 IT Pune\n\n## Fragment F2 - Mumbai Employees\n\n## EmpID Dept Location\n\n2 IT Mumbai\n\n5 Finance Mumbai\n\n## Fragment F3 - Delhi Employees\n\nEmpID Dept Location\n\n4 HR Delhi\n\n●\n\n## 3. Replication\n\n## Definition\n\nReplication means keeping copies of the same data at multiple locations.\n\n## Explanation\n\nInstead of storing data at only one site, copies are stored at other sites.\n\n## Example\n\nCustomer Table",
+            "metadata": {
+                "chunk_id": "18",
+                "source_file": "mod3.pdf",
+                "actual_text": "Each fragment contains:\n\n- Some rows of the original table\n- All columns of the original table\n\n## Example\n\nSuppose employees are divided according to their location.\n\nOriginal relation:\n\n## EMPLOYEE\n\nEmpID Dept Location\n\n1 HR Pune\n\n2 IT Mumbai\n\n3 IT Pune\n\n4 HR Delhi\n\n5 Finance Mumbai\n\nWe can create:\n\n## Fragment F1 - Pune Employees EmpID Dept Location\n\n1 HR Pune\n\n3 IT Pune\n\n## Fragment F2 - Mumbai Employees\n\n## EmpID Dept Location\n\n2 IT Mumbai\n\n5 Finance Mumbai\n\n## Fragment F3 - Delhi Employees\n\nEmpID Dept Location\n\n4 HR Delhi\n\n●\n\n## 3. Replication\n\n## Definition\n\nReplication means keeping copies of the same data at multiple locations.\n\n## Explanation\n\nInstead of storing data at only one site, copies are stored at other sites.\n\n## Example\n\nCustomer Table"
+            }
+        }
+    },
+    {
+        "id": "c62da33e-3f19-4988-b9ba-46a702f49223",
+        "payload": {
+            "page_content": "## Explanation\n\nInstead of storing all data in one place, different types of data are stored at different locations based on the organization's needs.\n\n## Example\n\nA company has offices in Mumbai, Delhi, and Pune.\n\n- Customer Data → Mumbai\n- Sales Data → Delhi\n- Employee Data → Pune\n\nEach office stores the data it uses most often.\n\n## Why is it important?\n\n- Reduces data access time.\n- Reduces network traffic.\n- Improves performance.\n\n## 2. Fragmentation\n\n## Definition\n\nFragmentation means dividing a large database into smaller parts called fragments.\n\nFragmentation is the process of dividing a relation (table) into smaller logical parts called fragments, which can be stored at different locations/sites in a distributed database.\n\nFor example, consider:",
+            "metadata": {
+                "chunk_id": "15",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Explanation\n\nInstead of storing all data in one place, different types of data are stored at different locations based on the organization's needs.\n\n## Example\n\nA company has offices in Mumbai, Delhi, and Pune.\n\n- Customer Data → Mumbai\n- Sales Data → Delhi\n- Employee Data → Pune\n\nEach office stores the data it uses most often.\n\n## Why is it important?\n\n- Reduces data access time.\n- Reduces network traffic.\n- Improves performance.\n\n## 2. Fragmentation\n\n## Definition\n\nFragmentation means dividing a large database into smaller parts called fragments.\n\nFragmentation is the process of dividing a relation (table) into smaller logical parts called fragments, which can be stored at different locations/sites in a distributed database.\n\nFor example, consider:"
+            }
+        }
+    },
+    {
+        "id": "e56a590b-e4cb-4078-87ef-d16fd0d2510d",
+        "payload": {
+            "page_content": "## Unit 3\n\n## Introduction to Distributed Databases\n\n## What is Distributed Data Processing?\n\nDistributed Data Processing (DDP) refers to processing data using multiple computers connected through a network. Instead of storing and processing all data at a single location, data and processing tasks are distributed among several sites.\n\n## Definition\n\nDistributed Data Processing is the division of data processing tasks among multiple computers that communicate through a network.\n\n## Example\n\nConsider a bank having branches in Mumbai, Pune, Delhi, and Chennai.\n\n- Each branch maintains local customer records.\n- Branches communicate with a central server.\n- Transactions can be performed from any branch.\n\nThis is distributed data processing.\n\n## Advantages",
+            "metadata": {
+                "chunk_id": "0",
+                "source_file": "mod3.pdf",
+                "actual_text": "## Unit 3\n\n## Introduction to Distributed Databases\n\n## What is Distributed Data Processing?\n\nDistributed Data Processing (DDP) refers to processing data using multiple computers connected through a network. Instead of storing and processing all data at a single location, data and processing tasks are distributed among several sites.\n\n## Definition\n\nDistributed Data Processing is the division of data processing tasks among multiple computers that communicate through a network.\n\n## Example\n\nConsider a bank having branches in Mumbai, Pune, Delhi, and Chennai.\n\n- Each branch maintains local customer records.\n- Branches communicate with a central server.\n- Transactions can be performed from any branch.\n\nThis is distributed data processing.\n\n## Advantages"
+            }
+        }
+    },
+    {
+        "id": "f2618c3e-fb79-4204-a658-10fc4f7fb21d",
+        "payload": {
+            "page_content": "Each campus manages its own data independently.\n\nThis is Local Autonomy.\n\n## 4. Reliability\n\n## Definition\n\nIf one site or server fails, the entire database system continues to work using the remaining sites.\n\n## Explanation\n\nSince data is distributed (and sometimes replicated), failure at one location does not stop the whole system.\n\n## Example\n\nSuppose an online shopping company has servers in:\n\n- Mumbai\n- Bengaluru\n- Chennai\n\nIf the Mumbai server stops working due to a power failure, users can still access the website because the Bengaluru and Chennai servers continue to provide the service.\n\nThis is Reliability.\n\n## 5. Scalability\n\n## Definition",
+            "metadata": {
+                "chunk_id": "5",
+                "source_file": "mod3.pdf",
+                "actual_text": "Each campus manages its own data independently.\n\nThis is Local Autonomy.\n\n## 4. Reliability\n\n## Definition\n\nIf one site or server fails, the entire database system continues to work using the remaining sites.\n\n## Explanation\n\nSince data is distributed (and sometimes replicated), failure at one location does not stop the whole system.\n\n## Example\n\nSuppose an online shopping company has servers in:\n\n- Mumbai\n- Bengaluru\n- Chennai\n\nIf the Mumbai server stops working due to a power failure, users can still access the website because the Bengaluru and Chennai servers continue to provide the service.\n\nThis is Reliability.\n\n## 5. Scalability\n\n## Definition"
+            }
+        }
+    }
+]
