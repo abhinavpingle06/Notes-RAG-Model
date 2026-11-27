@@ -1,0 +1,911 @@
+[
+  {
+    "question": "What is ETL and its full form.",
+    "answer": "ETL stands for EXTRACT. TRANSFORM. LOAD. ETL is a systematic process used to collect data from different sources, clean and convert that \ndata into a common format, and finally store it in a Data Warehouse or another target system. \nchunk",
+    "file_name": "Unit_5_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "01f6fcf8-3239-4ce7-b323-82e5c9f033d5",
+        "chunk_id": "Unit_5_ADT_0",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Explain the three major functions of ETL",
+    "answer": "ETL consists of three major functions: \n1. Extract \nCollect data from source systems. \n2. Transform \nClean, validate, integrate and convert the extracted data. \n3. Load",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "01f6fcf8-3239-4ce7-b323-82e5c9f033d5",
+        "chunk_id": "Unit_5_ADT_0",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "1"
+      },
+      {
+        "embedding_id": "91729efc-af16-4811-8f60-87faf8f7f52c",
+        "chunk_id": "Unit_5_ADT_2",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Types of source data in ADT",
+    "answer": "It has 3 types - Structured, Semi-structured, Unstructured",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "f5197812-bcbf-4f81-890e-f27dfbb2692e",
+        "chunk_id": "Unit_5_ADT_3",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "What are the all sources of data for ETL",
+    "answer": "Relational Databases,  NoSQL Databases, Flat Files, Web APIs,  Enterprise Applications ,  Cloud Sources.",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "f5197812-bcbf-4f81-890e-f27dfbb2692e",
+        "chunk_id": "Unit_5_ADT_3",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "709f213f-e852-44a6-8d8a-7779dd7681dd",
+        "chunk_id": "Unit_5_ADT_4",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "98ac7cf0-4035-4de6-824a-1d956c26a314",
+        "chunk_id": "Unit_5_ADT_5",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "types of extraction of data from the sources",
+    "answer": "1. Immediate Data Extraction \n2. Deferred Data Extraction \n3. Full Extraction \n4. Incremental Extraction",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "888b52e7-49c5-49d9-bf2c-b6c2bcd298f0",
+        "chunk_id": "Unit_5_ADT_8",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Explain Immediate Data Extraction with example, advantages, disadvantages and applications",
+    "answer": "1. Immediate Data Extraction \n2. Deferred Data Extraction \n3. Full Extraction \n4. Incremental Extraction and explanation",
+    "file_name": "Unit_5_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "888b52e7-49c5-49d9-bf2c-b6c2bcd298f0",
+        "chunk_id": "Unit_5_ADT_8",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "4fe69cd9-1b59-40ba-8073-20f5d73988e2",
+        "chunk_id": "Unit_5_ADT_9",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "8f730921-4dd8-434e-a5bc-6c2348e220e9",
+        "chunk_id": "Unit_5_ADT_10",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "What is data transformation?",
+    "answer": "Data transformation is the process of converting extracted source data into a clean, \nconsistent, standardized and target-compatible form.",
+    "file_name": "Unit_5_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "12262171-9cb0-44b9-9ddb-50eae4aed948",
+        "chunk_id": "Unit_5_ADT_16",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "List the task Involved in Data Transformation",
+    "answer": "Data cleaning and all that",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "808781dc-b6e9-47de-aadc-72faf705bca0",
+        "chunk_id": "Unit_5_ADT_17",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "886980c4-459f-46fe-a945-b56b22b6164f",
+        "chunk_id": "Unit_5_ADT_18",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "68220a3a-cc1c-4d85-991b-e4a425711533",
+        "chunk_id": "Unit_5_ADT_19",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "What is data loading?",
+    "answer": "Data loading is the process of transferring transformed data into the target system, \nusually a data warehouse, data mart, database or data lake.",
+    "file_name": "Unit_5_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "4cf720be-02a6-485f-9c9c-1f4b5ed6424d",
+        "chunk_id": "Unit_5_ADT_24",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "597be715-e592-4343-85a6-a72d2c1fce14",
+        "chunk_id": "Unit_5_ADT_25",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "1"
+      }
+    ]
+  },
+  {
+    "question": "List the techniques of data loading",
+    "answer": "1. Full Load \n2. Incremental Load \n3. Batch Load \n4. Real-Time Load \n5. Bulk Load \n6. Parallel Load \n7. Append Load",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "597be715-e592-4343-85a6-a72d2c1fce14",
+        "chunk_id": "Unit_5_ADT_25",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Explain all the data loading technique",
+    "answer": "1. Full Load \n2. Incremental Load \n3. Batch Load \n4. Real-Time Load \n5. Bulk Load \n6. Parallel Load \n7. Append Load",
+    "file_name": "Unit_5_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "597be715-e592-4343-85a6-a72d2c1fce14",
+        "chunk_id": "Unit_5_ADT_25",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "1"
+      },
+      {
+        "embedding_id": "9a912748-ada4-485c-a45b-1981341f5b79",
+        "chunk_id": "Unit_5_ADT_26",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "f0e77fa2-dbb6-486e-9fb2-80cc00e90834",
+        "chunk_id": "Unit_5_ADT_27",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "403a12d6-6c6b-4bb6-9b4f-fcd45ed4b661",
+        "chunk_id": "Unit_5_ADT_28",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "List all the Major ETL tools",
+    "answer": "Informatica, Talend, SSIS, Apache NiFi, Apache Airflow , AWS Glue, zure Data Factory",
+    "file_name": "Unit_5_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "6799cce6-8610-4d4f-ba3e-118583488115",
+        "chunk_id": "Unit_5_ADT_39",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      },
+      {
+        "embedding_id": "9f9b29fa-3591-4b02-9a4c-4aa0e57c2eab",
+        "chunk_id": "Unit_5_ADT_40",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Difference betweeen ETL and ELT",
+    "answer": "the difference",
+    "file_name": "Unit_5_ADT",
+    "type": "difference",
+    "required_chunks": [
+      {
+        "embedding_id": "e0408289-3eea-4656-a6a4-e21e9e7a8b78",
+        "chunk_id": "Unit_5_ADT_43",
+        "source_file": "Unit_5_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "What is Distributed Data Processing? Provide example",
+    "answer": "Distributed Data Processing (DDP) refers to processing data using multiple computers connected \nthrough a network. Instead of storing and processing all data at a single location, data and \nprocessing tasks are distributed among several sites.",
+    "file_name": "UNIT_3_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "e2fe118f-2ef0-4ce8-bb13-188e27892e1f",
+        "chunk_id": "Unit 3_ADT_0",
+        "source_file": "Unit 3_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "What is Distributed Database System (DDBS) ?",
+    "answer": "A Distributed Database System (DDBS) is a collection of logically related databases distributed \nacross multiple locations and connected through a communication network.",
+    "file_name": "UNIT_3_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "ef47e8a1-f2a9-4159-bf95-9df9ad82d408",
+        "chunk_id": "Unit 3_ADT_1",
+        "source_file": "Unit 3_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "List the Types of Distributed Database Architecture",
+    "answer": "1. Client–Server Architecture \n2. Peer-to-Peer Architecture \n3. Multi-Database Architecture",
+    "file_name": "UNIT_3_ADT",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "0b9e5a70-4123-48b5-9244-f671c073d205",
+        "chunk_id": "Unit 3_ADT_7",
+        "source_file": "Unit 3_ADT.pdf",
+        "relevant": "1"
+      },
+      {
+        "embedding_id": "487357aa-dc37-4a40-99ea-ab7cfa0af5af",
+        "chunk_id": "Unit 3_ADT_8",
+        "source_file": "Unit 3_ADT.pdf",
+        "relevant": "2"
+      }
+    ]
+  },
+  {
+    "question": "Explain the types  of Distributed Databases",
+    "answer": "1. Homogeneous Distributed Database, 2. Heterogeneous Distributed Database",
+    "file_name": "UNIT_3_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "52f2bed6-38d0-44c0-9a75-1ba59c8b7287",
+        "chunk_id": "Unit 3_ADT_13",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "2bf23155-8f16-44dd-952b-d24e2ce44504",
+        "chunk_id": "Unit 3_ADT_14",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is fragmentation? With Example",
+    "answer": "Fragmentation is the process of dividing a relation (table) into smaller logical parts called \nfragments, which can be stored at different locations/sites in a distributed database",
+    "file_name": "UNIT_3_ADT",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "e8e46ac2-da53-4255-9332-48eea83c512a",
+        "chunk_id": "Unit 3_ADT_15",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "2bcceb85-c0be-42d8-88b3-3b3bfb36f398",
+        "chunk_id": "Unit 3_ADT_16",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Why is fragmentation required?",
+    "answer": "1. Improve query performance \nQueries can access only the required fragment instead of the entire table. \n2. Reduce communication cost \nLess data needs to travel between different network sites. \n3. Support parallel processing \nDifferent fragments can be processed simultaneously at different sites. \n4. Improve availability \nData can remain available even if one site becomes temporarily unavailable. \n5. Improve scalability \nData can be distributed as the database grows. \n6. Provide better data management \nData can be placed according to geographical location, department, workload, etc.",
+    "file_name": "UNIT_3_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "2bcceb85-c0be-42d8-88b3-3b3bfb36f398",
+        "chunk_id": "Unit 3_ADT_16",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "a8c56a29-ced9-4434-9f7f-52f61168c043",
+        "chunk_id": "Unit 3_ADT_17",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Explain horizontal Fragmentation",
+    "answer": "In horizontal fragmentation, a relation is divided based on its rows (tuples).",
+    "file_name": "UNIT_3_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "a8c56a29-ced9-4434-9f7f-52f61168c043",
+        "chunk_id": "Unit 3_ADT_17",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "51f9bad1-cdb9-4c87-a7a3-eaf471937b44",
+        "chunk_id": "Unit 3_ADT_22",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "18dc5772-8a25-44af-8be4-1af6834be054",
+        "chunk_id": "Unit 3_ADT_23",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Distributed Query Processing & its steps",
+    "answer": "Distributed Query Processing is the process of executing an SQL query when the required \ndata is stored at different locations (sites) in a distributed database.\n1. Query Parsing \n2. Query Decomposition \n3. Data Localization \n4. Query Optimization \n5. Query Execution",
+    "file_name": "UNIT_3_ADT",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "494e8821-797d-45e0-9c46-e25cfd322234",
+        "chunk_id": "Unit 3_ADT_35",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "dec306b5-dace-4652-9ed1-1cbb83f076de",
+        "chunk_id": "Unit 3_ADT_36",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Difference between Query Execution & Optimization",
+    "answer": "the difference",
+    "file_name": "UNIT_3_ADT",
+    "type": "difference",
+    "required_chunks": [
+      {
+        "embedding_id": "884fe3fa-dffc-45c8-a95f-d0620b7ee849",
+        "chunk_id": "Unit 3_ADT_38",
+        "source_file": "Unit 3_ADT.pdf"
+      },
+      {
+        "embedding_id": "d7315b54-c9f3-4ce6-aeaf-90074a8994d7",
+        "chunk_id": "Unit 3_ADT_39",
+        "source_file": "Unit 3_ADT.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Risk Containment",
+    "answer": "Containing risk is the process of keeping track of noticed risks, finding new risks, monitoring \nresidual risks, and analysing the risks.",
+    "file_name": "MOD_5_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "1fe2f058-a17b-46f1-8c54-7946d1ce9bf0",
+        "chunk_id": "Module_4_SE_0",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Explain RMMM & RMMM Plan",
+    "answer": "1. Risk avoidance (mitigation) \n2. Risk monitoring \n3. Risk management and contingency planning",
+    "file_name": "MOD_5_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "45258e68-a6c6-4f66-a0cb-8931f641975b",
+        "chunk_id": "Module_4_SE_4",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "907c73e3-86a5-4d28-bc26-88d64d3276de",
+        "chunk_id": "Module_4_SE_7",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "29f52ccd-04cd-4c84-8d1c-7d3c595e1775",
+        "chunk_id": "Module_4_SE_8",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "ffbd43fc-c01e-4d64-b950-affe8b9ef8a9",
+        "chunk_id": "Module_4_SE_9",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is SOFTWARE CONFIGURATION MANAGEMENT (SCM)",
+    "answer": "Definition: Configuration Management (CM) is the process of identifying and defining the \nconfiguration items in a system, controlling the release and change of these items \nthroughout the system lifecycle, recording and reporting the status of configuration items \nand change requests, and verifying the completeness and correctness of configuration \nitems.",
+    "file_name": "MOD_5_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "f421b098-a9c4-4c06-b39e-8ddd6ddbebea",
+        "chunk_id": "Module_4_SE_10",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "ad5f0d42-57ec-472e-b25b-0956a72b0dbc",
+        "chunk_id": "Module_4_SE_11",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "b5d5eb72-5043-466f-a5a4-280161d20ad3",
+        "chunk_id": "Module_4_SE_12",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is PCA and FCA in SE",
+    "answer": "Physical Configuration Audit (PCA): Conducted to verify that all items in the product \nbaseline are included and documented. \n● Functional Configuration Audit (FCA): Ensures that the functional requirements \ndefined in the baseline are met.",
+    "file_name": "MOD_5_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "88fb6eb1-d083-42f7-9016-11e7ac62f90c",
+        "chunk_id": "Module_4_SE_22",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "List components of SQA",
+    "answer": "(1) Pre project Component \n(2) Components of project life cycle activities assurance assessment  \n(3) Components of infrastructure defect avoidance and improvement  \n(4) Components of quality management  \n(5) Components of standardization, certification and SQA system evaluation  \n(6) Components of SQA - human components",
+    "file_name": "MOD_5_SEA",
+    "type": "list",
+    "required_chunks": [
+      {
+        "embedding_id": "83aed380-57a9-4d82-9501-420b414c81cc",
+        "chunk_id": "Module_4_SE_56",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "5d72e417-52c0-4b18-92a7-297480db4c85",
+        "chunk_id": "Module_4_SE_57",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "How to plan a SQA plan",
+    "answer": "Steps for SQA Plan \n1. Develop SQA Plan  \n2. Preparation  \n3. Review the Process",
+    "file_name": "MOD_5_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "297d4ebc-4995-41e9-902a-081aea603136",
+        "chunk_id": "Module_4_SE_80",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "fc2ff5c1-94f2-422c-a424-01d856a900da",
+        "chunk_id": "Module_4_SE_81",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Difference betweeen FTR and WalkThrough",
+    "answer": "the difference",
+    "file_name": "MOD_5_SEA",
+    "type": "difference",
+    "required_chunks": [
+      {
+        "embedding_id": "c854f1a9-c60b-4287-a357-94226d446ccb",
+        "chunk_id": "Module_4_SE_101",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "391c12f3-c2ac-45cf-b779-61eabe8d366b",
+        "chunk_id": "Module_4_SE_102",
+        "source_file": "Module_4_SE.pdf"
+      },
+      {
+        "embedding_id": "5bbc945f-0d7e-4ca7-8bbb-b77457c9378c",
+        "chunk_id": "Module_4_SE_104",
+        "source_file": "Module_4_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Acceptance Testing?",
+    "answer": "Acceptance Testing is a type of testing performed to check whether the software meets the customer's requirements and business needs. It determines whether the software is acceptable for delivery or use.\n\nTypes of Acceptance Testing:\n\n1. User Acceptance Testing (UAT)\n2. Business Acceptance Testing\n3. Alpha Testing\n4. Beta Testing\n5. Contract Acceptance Testing",
+    "file_name": "MOD_6_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "a9cd7637-2c69-47d3-bcf7-01d303d4b5bf",
+        "chunk_id": "module6_SE_0",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "3250a062-ae5e-40f2-b817-892eb864dbfa",
+        "chunk_id": "module6_SE_1",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Static Testing?",
+    "answer": "Static Testing is a testing technique in which software documents, design, and source code are examined without executing the program. It helps identify errors at an early stage.\n\nStatic Testing Techniques:\n\n1. Review\n2. Walkthrough\n3. Inspection\n4. Static Code Analysis",
+    "file_name": "MOD_6_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "0a709a99-e4e5-4472-a2f3-a6b553470267",
+        "chunk_id": "module6_SE_2",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "19a03d3c-cc8e-4036-bfac-749959f989f3",
+        "chunk_id": "module6_SE_3",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Dynamic Testing?",
+    "answer": "Dynamic Testing is a testing technique in which the software is executed to identify defects and verify whether it behaves according to the requirements.\n\nTypes of Dynamic Testing:\n\n1. Unit Testing\n2. Integration Testing\n3. System Testing\n4. Acceptance Testing",
+    "file_name": "MOD_6_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "f2247b18-d896-41fb-851f-cc465529d172",
+        "chunk_id": "module6_SE_4",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "21e4564f-daec-452a-a955-c212f6380fe7",
+        "chunk_id": "module6_SE_5",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Regression Testing?",
+    "answer": "Regression Testing is performed to verify that new changes or modifications have not negatively affected existing functionality.\n\nFor example, if a developer modifies the Student Registration module, related features like Login, Payment, and Attendance are tested again to ensure they work correctly.",
+    "file_name": "MOD_6_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "3da95acc-b9e1-493d-8ec2-4d0fc417d5c7",
+        "chunk_id": "module6_SE_8",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "a0d35efd-0299-4335-b14a-1c991a0a8aab",
+        "chunk_id": "module6_SE_9",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Continuous Testing?",
+    "answer": "Continuous Testing is the practice of performing testing continuously throughout the software development and delivery process.\n\nIt is commonly integrated into the CI/CD pipeline.\n\nBenefits of Continuous Testing:\n\n1. Identifies defects early.\n2. Provides quick feedback.\n3. Supports frequent software releases.\n4. Reduces manual testing effort through automation.\n5. Improves software quality.",
+    "file_name": "MOD_6_SEA",
+    "type": "defination",
+    "required_chunks": [
+      {
+        "embedding_id": "01d60d30-c1bd-4e68-9906-6ee91f69482f",
+        "chunk_id": "module6_SE_10",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "7e097dfb-e400-44f9-8009-07e8c050ed59",
+        "chunk_id": "module6_SE_11",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Scrum?",
+    "answer": "Scrum is an Agile framework used to develop and manage software projects. It divides project work into small, manageable periods called Sprints.\n\nComponents of Scrum:\n\n1. Sprint\n2. Product Backlog\n3. Sprint Backlog\n4. Scrum Team\n5. Product Owner\n6. Scrum Master\n7. Developers\n8. Daily Scrum\n9. Sprint Planning\n10. Sprint Review\n11. Sprint Retrospective\n12. Product Increment",
+    "file_name": "MOD_6_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "3e57ce89-0054-4a9e-b2e7-a6bc23a67372",
+        "chunk_id": "module6_SE_14",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "2e23f841-8b94-45f2-90ea-4bd2d1ea78b1",
+        "chunk_id": "module6_SE_15",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "30ba8f9c-2f33-4676-b410-f3427899f813",
+        "chunk_id": "module6_SE_16",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "4b0f6bc3-bb2b-4cbc-919c-4264bd1516db",
+        "chunk_id": "module6_SE_17",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "bbdf9187-ba64-413e-8aee-89895af82d03",
+        "chunk_id": "module6_SE_18",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is Kanban?",
+    "answer": "Kanban is an Agile project management method used to manage and visualize the flow of work. It helps the development team track tasks from start to completion.\n\n**Components of a Kanban Board:**\n1. To Do\n2. In Progress\n3. Testing\n4. Done\n\n**Principles of Kanban:**\n1. Visualize the Workflow.\n2. Manage the Flow.\n3. Continuous Improvement.",
+    "file_name": "MOD_6_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "f218eb90-24f2-40be-b959-f44400ebbe26",
+        "chunk_id": "module6_SE_22",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "88a6d99f-d6e8-44be-8f86-75f36fdd8f01",
+        "chunk_id": "module6_SE_23",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "14a424b0-3da9-42ca-9f1f-d95b50ba431f",
+        "chunk_id": "module6_SE_24",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "f048ef3f-aad4-48a2-a536-8ee8599ca5f4",
+        "chunk_id": "module6_SE_25",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is XP (Extreme Programming)?",
+    "answer": "Extreme Programming (XP) is an Agile software development methodology that focuses on producing high-quality software through frequent releases, continuous customer feedback, teamwork, and continuous testing.\n\n**Important Practices of XP:**\n1. Pair Programming\n2. Test-Driven Development (TDD)\n3. Continuous Integration\n4. Small Releases\n5. Customer Involvement\n6. Refactoring\n7. Simple Design",
+    "file_name": "MOD_6_SEA",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "fe3d6b80-9a09-4fdb-bf5a-daca4894c79c",
+        "chunk_id": "module6_SE_35",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "1aa3ae59-edb4-4798-bb02-3e584835fbf8",
+        "chunk_id": "module6_SE_36",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "33d3d4e8-e010-4f21-a97d-0d5476c93ed4",
+        "chunk_id": "module6_SE_37",
+        "source_file": "module6_SE.pdf"
+      },
+      {
+        "embedding_id": "b20f4466-ef0a-43a1-96a5-62ee905a330d",
+        "chunk_id": "module6_SE_38",
+        "source_file": "module6_SE.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What are Refs in React? Explain their uses.",
+    "answer": "Refs (references) in React are used to store mutable values across renders without causing a component to re-render. They also allow direct access to DOM elements.\n\nRefs are JavaScript objects containing a property called `.current`.\n\n**Uses of Refs:**\n1. Focusing an input field.\n2. Scrolling to a specific element.\n3. Measuring the size or position of an element.\n4. Controlling media playback, such as playing or pausing a video.\n5. Storing timer or interval IDs.\n\n**Example:**\n```jsx\nimport { useRef } from 'react';\n\nfunction App() {\n  const inputRef = useRef(null);\n\n  return (\n    <>\n      <input ref={inputRef} />\n      <button onClick={() => inputRef.current.focus()}>\n        Focus Input\n      </button>\n    </>\n  );\n}\n```",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "fd401a71-1e54-4e83-8cde-d1fbfb049d0f",
+        "chunk_id": "NEP_WebTech_Module3_0",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "2b9a93f0-fef4-445c-928b-9912a1e78575",
+        "chunk_id": "NEP_WebTech_Module3_1",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "799f66b8-a911-4d98-b220-7a9baaa51be0",
+        "chunk_id": "NEP_WebTech_Module3_3",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is useEffect in React? Explain its syntax and uses.",
+    "answer": "`useEffect` is a React Hook used to perform side effects in functional components.\n\nSide effects are operations performed after rendering that do not directly affect the current rendering process.\n\n**Uses of useEffect:**\n1. Fetching data from APIs.\n2. Setting up subscriptions.\n3. Manually updating the DOM.\n4. Managing timers and event listeners.\n\n**Syntax:**\n```jsx\nuseEffect(() => {\n  // Side-effect code\n\n  return () => {\n    // Cleanup code\n  };\n}, [dependencies]);\n```\n\nThe `useEffect` function accepts two arguments:\n1. Effect Function: Contains the code to execute.\n2. Dependency Array: Specifies when the effect should run again.",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "18c64be2-9d0f-43be-a84d-fabe5d533ffd",
+        "chunk_id": "NEP_WebTech_Module3_5",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "c971e52c-029d-44d3-a814-f43ea4beea22",
+        "chunk_id": "NEP_WebTech_Module3_7",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "aee1f92a-e2fe-4a9d-87fa-0a8c70d3a125",
+        "chunk_id": "NEP_WebTech_Module3_17",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Explain the three variations of the useEffect dependency array.",
+    "answer": "The `useEffect` Hook has three common dependency array variations:\n\n**1. Without Dependency Array**\n\nThe effect runs after every render of the component.\n\n```jsx\nuseEffect(() => {\n  console.log(\"Runs after every render\");\n});\n```\n\n**2. Empty Dependency Array []**\n\nThe effect runs once after the component initially loads.\n\n```jsx\nuseEffect(() => {\n  console.log(\"Runs once after initial render\");\n}, []);\n```\n\n**3. With Dependencies [value]**\n\nThe effect runs after the initial render and whenever the specified dependency changes.\n\n```jsx\nuseEffect(() => {\n  console.log(\"Value changed\");\n}, [value]);\n```",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "365cc01f-5f0b-42a0-bed9-54f4e16642ac",
+        "chunk_id": "NEP_WebTech_Module3_10",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "0f367116-ccf2-46cf-9738-0ac362b8fac3",
+        "chunk_id": "NEP_WebTech_Module3_11",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "fee26c0b-f3aa-4a90-9321-fd27bb4cbafb",
+        "chunk_id": "NEP_WebTech_Module3_12",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What are React Hooks? Explain the useState Hook with an example.",
+    "answer": "Hooks are special functions in React that allow functional components to use state and other React features without writing class components.\n\nHooks help manage state, lifecycle events, and side effects.\n\n**useState Hook:**\n\n`useState` is a React Hook used to add and manage state variables in functional components.\n\nIt returns two values:\n1. Current state value.\n2. Function to update the state.\n\n**Syntax:**\n```jsx\nconst [count, setCount] = useState(0);\n```\n\n**Example:**\n```jsx\nimport { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>\n        Increment\n      </button>\n    </>\n  );\n}\n```\n\nIn this example, clicking the button increases the count by one.",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "c1924245-9f02-42db-9144-5e6230379d79",
+        "chunk_id": "NEP_WebTech_Module3_4",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "68fb5750-81a8-4968-99dc-51a5dc214f6b",
+        "chunk_id": "NEP_WebTech_Module3_16",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Explain the useReducer Hook in React.",
+    "answer": "`useReducer` is a React Hook used to manage complex state logic. It is an alternative to the `useState` Hook.\n\nIt is useful when state logic involves multiple values or when the next state depends on the previous state.\n\n**Important concepts:**\n1. Reducer: A pure function that takes the current state and an action.\n2. Action: Describes the operation to be performed.\n3. Dispatch: Sends an action to the reducer.\n4. Initial State: Defines the starting state.\n\n**Syntax:**\n```jsx\nconst [state, dispatch] = useReducer(reducer, initialState);\n```\n\n**Example:**\n```jsx\nimport { useReducer } from 'react';\n\nconst initialState = { count: 0 };\n\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'increment':\n      return { count: state.count + 1 };\n\n    case 'decrement':\n      return { count: state.count - 1 };\n\n    default:\n      return state;\n  }\n}\n\nfunction Counter() {\n  const [state, dispatch] = useReducer(reducer, initialState);\n\n  return (\n    <>\n      <p>Count: {state.count}</p>\n      <button onClick={() => dispatch({ type: 'increment' })}>\n        Increment\n      </button>\n      <button onClick={() => dispatch({ type: 'decrement' })}>\n        Decrement\n      </button>\n    </>\n  );\n}\n```",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "2d8f8492-323b-4acf-b65b-79721827b098",
+        "chunk_id": "NEP_WebTech_Module3_23",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "e6d807a6-cdab-4907-a82c-6f4897e89e33",
+        "chunk_id": "NEP_WebTech_Module3_25",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What is useContext in React? Explain its advantages.",
+    "answer": "`useContext` is a React Hook used to access shared data across components without passing props manually through every component.\n\nReact provides the Context API to share values such as themes, user information, and application settings.\n\n**Steps to use Context:**\n1. Create a context using `createContext()`.\n2. Create a Context Provider.\n3. Pass shared values through the Provider.\n4. Wrap the required components with the Provider.\n5. Access the shared values using `useContext()`.\n\n**Advantages:**\n1. Reduces prop drilling.\n2. Makes code simpler and more readable.\n3. Helps share data across multiple components.\n4. Makes application state easier to manage.\n\n**Example:**\n```jsx\nimport { createContext, useContext } from 'react';\n\nconst ThemeContext = createContext();\n\nfunction Button() {\n  const theme = useContext(ThemeContext);\n  return <button>{theme}</button>;\n}\n```",
+    "file_name": "Web_Technology_Module_3",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "46d2f889-a14d-4c5c-aede-95cbd87b4cd7",
+        "chunk_id": "NEP_WebTech_Module3_26",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "25bfaf39-a1df-42e8-ae2e-1c1cfeac3968",
+        "chunk_id": "NEP_WebTech_Module3_27",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "64d7b33b-2774-4981-8d2b-c907a46241c5",
+        "chunk_id": "NEP_WebTech_Module3_28",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "5fc918e4-2d02-4a51-b3fa-bbb819f29809",
+        "chunk_id": "NEP_WebTech_Module3_29",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "Explain the different phases of useEffect in React.",
+    "answer": "The `useEffect` Hook is used to manage operations during different phases of a component's lifecycle.\n\n**1. Mounting Phase:**\n\n- Occurs when the component is first rendered.\n- An effect with an empty dependency array runs after the initial render.\n- It is similar to `componentDidMount`.\n\n```jsx\nuseEffect(() => {\n  console.log(\"Component mounted\");\n}, []);\n```\n\n**2. Updating Phase:**\n\n- Occurs when specified dependencies change.\n- The effect runs again when a dependency value changes.\n- It is similar to `componentDidUpdate`.\n\n```jsx\nuseEffect(() => {\n  console.log(\"Value updated\");\n}, [value]);\n```\n\n**3. Unmounting Phase:**\n\n- Occurs when a component is removed.\n- A cleanup function is used to clear timers or unsubscribe from services.\n- It is similar to `componentWillUnmount`.\n\n```jsx\nuseEffect(() => {\n  return () => {\n    console.log(\"Component unmounted\");\n  };\n}, []);\n```",
+    "file_name": "Web_Technology_Module_3",
+    "type": "explain",
+    "required_chunks": [
+      {
+        "embedding_id": "365cc01f-5f0b-42a0-bed9-54f4e16642ac",
+        "chunk_id": "NEP_WebTech_Module3_10",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "0f367116-ccf2-46cf-9738-0ac362b8fac3",
+        "chunk_id": "NEP_WebTech_Module3_11",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "fee26c0b-f3aa-4a90-9321-fd27bb4cbafb",
+        "chunk_id": "NEP_WebTech_Module3_12",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  },
+  {
+    "question": "What are Custom Hooks in React? Explain their advantages and rules.",
+    "answer": "Custom Hooks are reusable functions in React that allow developers to extract and share logic between functional components.\n\nThey help separate application logic from the user interface and make code easier to maintain.\n\n**Advantages of Custom Hooks:**\n1. Reuse logic across multiple components.\n2. Reduce duplicate code.\n3. Keep components focused on UI.\n4. Improve code organization and maintenance.\n\n**Rules of Custom Hooks:**\n1. The name must start with `use`, such as `useFetch` or `useAuth`.\n2. They can call built-in React Hooks like `useState` and `useEffect`.\n3. Each call has its own independent state and effects.\n4. They reuse logic, not the same state between components.\n\n**Example:**\n```jsx\nimport { useState, useEffect } from 'react';\n\nfunction useStudent(studentId) {\n  const [student, setStudent] = useState(null);\n\n  useEffect(() => {\n    if (studentId) {\n      fetch(`https://example.com/${studentId}`)\n        .then(response => response.json())\n        .then(data => setStudent(data));\n    }\n  }, [studentId]);\n\n  return student;\n}\n```\n\nHere, `useStudent` is a custom Hook that fetches student information based on the student ID.",
+    "file_name": "Web_Technology_Module_3",
+    "type": "code",
+    "required_chunks": [
+      {
+        "embedding_id": "9fd567aa-1345-4ef6-ac08-3e6ce44425e8",
+        "chunk_id": "NEP_WebTech_Module3_31",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "356ef182-5432-445a-819b-2074460bfe68",
+        "chunk_id": "NEP_WebTech_Module3_32",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      },
+      {
+        "embedding_id": "217cc4a8-029c-4c03-949e-5acd09514604",
+        "chunk_id": "NEP_WebTech_Module3_33",
+        "source_file": "NEP_WebTech_Module3.pdf"
+      }
+    ]
+  }
+]

@@ -83,3 +83,6 @@ infra/terraform.tfvars
 *.csr
 *.ext
 *.srl
+*.pdf
+old_embedding_dataset.json
+golden_embeddings.json
